@@ -4,7 +4,7 @@ pushd %~dp0
 
 setlocal
 set fold=test
-set file=test1.py
+set file=test2.py
 
 call :Generater
 call :MDChecker
