@@ -3,6 +3,8 @@ from logging import DEBUG, FileHandler, Formatter, StreamHandler, getLogger
 
 logger = getLogger("main")
 handler = StreamHandler()
+fhandler = FileHandler(filename="..\\.data\\app.log",
+                       encoding="utf-8", mode="w")
 handler.setLevel(DEBUG)
 formatter = Formatter(
     "%(relativeCreated)6d:[%(asctime)s][%(name)10s][%(levelname)s]:"
@@ -17,6 +19,12 @@ dhandler = FileHandler(filename="..\\.data\\discord.log",
 dhandler.setLevel(DEBUG)
 dhandler.setFormatter(formatter)
 dlogger.addHandler(dhandler)
+blogger = getLogger("bot")
+blogger.setLevel(DEBUG)
+blogger.addHandler(handler)
+bhandler = FileHandler(filename="..\\.data\\bot.log",
+                       encoding="utf-8", mode="w")
+blogger.addHandler(bhandler)
 
 logger.debug("set up.")
 
@@ -24,7 +32,7 @@ logger.debug("set up.")
 def main():
     logger.debug("main wake.")
     from bot import Bot
-    bot = Bot()
+    bot = Bot(prfix="?")
     logger.debug("bot run.")
     bot.run()
 

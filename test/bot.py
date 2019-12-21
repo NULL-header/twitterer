@@ -1,18 +1,30 @@
 # encoding:utf-8
-from logging import DEBUG, FileHandler, Formatter, StreamHandler, getLogger
+from logging import getLogger
 
 import discord
 import tweepy
 from discord.ext import commands
 
-logger = getLogger("main").getChild(__name__)
+logger = getLogger(__name__)
+
+
+class Cmds(commands.Cog):
+    def __init__(self, bot):
+        logger.debug("class cmds starts up.")
+        self.bot = bot
+
+    @commands.command()
+    async def test(self, ctx):
+        logger.debug("check test")
+        await ctx.send("OK, master!")
 
 
 class Bot():
-    def __init__(self):
-        logger.debug("some setting on init")
-        self.bot = commands.Bot(command_prefix=("!"),
+    def __init__(self, *, prfix="!"):
+        logger.debug(" setting prefix to \"{0}\" on init.".format(prfix))
+        self.bot = commands.Bot(command_prefix=(prfix),
                                 description="simple my twitterer bot.")
+        self.bot.add_cog(Cmds(self.bot))
 
     @staticmethod
     def read_keys(path: str) -> dict:
