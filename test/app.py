@@ -1,4 +1,6 @@
 # encoding:utf-8
+import os
+import subprocess
 import sys
 from logging import DEBUG, FileHandler, Formatter, StreamHandler, getLogger
 
@@ -55,8 +57,15 @@ def read_keys(path: str) -> dict:
 
 def main():
     logger.debug("main wake.")
+    logger.debug("check args.")
+    args = sys.argv
     from bot import Bot
-    bot = Bot()
+    if len(args) == 1:
+        logger.debug("args have no items.")
+        bot = Bot()
+    else:
+        logger.debug("args have items, {}.".format(args[1]))
+        bot = Bot(prfix=args[1])
     try:
         TOKEN = read_keys("..\\.data\\key.txt")["token"]
         logger.debug("bot run.")
