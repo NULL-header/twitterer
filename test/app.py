@@ -51,13 +51,9 @@ def read_keys(path: str) -> dict:
                      "with this traceback:{0}\n".format(sys.exc_info()))
         logger.error("put key.txt.")
         return None
-    finally:
-        logger.debug("read_keys finished.")
 
 
 def main():
-    logger.debug("main wake.")
-    logger.debug("check args.")
     args = sys.argv
     from bot import Bot
     if len(args) == 1:
@@ -73,10 +69,7 @@ def main():
     except Exception:
         logger.error("could not read token;\n\n"
                      "with this traceback:{0}\n".format(sys.exc_info()))
-    finally:
-        logger.debug("main function finished.")
 
 
 if __name__ == "__main__":
-    logger.debug("Start main function.")
     main()

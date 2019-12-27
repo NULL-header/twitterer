@@ -22,7 +22,6 @@ class Bot(commands.Bot):
         logger.debug("class Bot setting prfix to {0} on init.".format(prfix))
         super().__init__(prfix)
         self.prfix = prfix
-        logger.debug("load cogs.")
         for cog in EXTENSIONS:
             try:
                 self.load_extension(cog)
@@ -34,7 +33,6 @@ class Bot(commands.Bot):
 
     async def on_ready(self):
         logger.debug("---Loged in as {0.name}({0.id})---".format(self.user))
-        logger.debug("check whether prefix as default.")
         if(self.prfix == "!DEFAULT!"):
             logger.debug("restart up app.")
             cmd = "python app.py !{}!".format(self.user.name)
