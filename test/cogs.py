@@ -76,10 +76,7 @@ class Cmds(commands.Cog):
             logger.debug("no item on path_bind;\n\n"
                          "with this trackback:{}\n".format(sys.exc_info))
 
-    async def botcmds(self):
-        def likes(msg):
-            await msg.add_reaction(emoji)
-
+    def botcmds(self):
         @self.bot.check
         async def block_dm(ctx):
             logger.debug("check decorater worked.")
@@ -100,7 +97,7 @@ class Cmds(commands.Cog):
                             await self.bot.process_commands(msg)
                         else:
                             logger.debug("no command.")
-                            await likes(msg)
+                            await msg.add_reaction(emoji)
 
 
 def setup(bot):
