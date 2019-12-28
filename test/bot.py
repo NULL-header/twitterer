@@ -1,16 +1,42 @@
 # encoding:utf-8
+import os
+import subprocess
+import sys
+from logging import NullHandler, getLogger
+
 import discord
+import tweepy
 from discord.ext import commands
 
-
-def read_keys(path: str) -> dict:
-    with open(path, "r")as f:
-        text = f.readlines()
-    list_dict = []
-    for t in text:
-        list_dict.append(tuple(t.split(":")))
-    return dict(list_dict)
+logger = getLogger("bot")
+logger.addHandler(NullHandler())
 
 
-path_keys = "..\\.data\\key.txt"
-keys = read_keys(path_keys)
+EXTENSIONS = [
+    "cogs"
+]
+
+
+class Bot(commands.Bot):
+    def __init__(self, *, prfix="!DEFAULT!"):
+        logger.debug("class Bot setting prfix to {0} on init.".format(prfix))
+        super().__init__(prfix)
+        self.prfix = prfix
+        for cog in EXTENSIONS:
+            try:
+                self.load_extension(cog)
+                logger.debug("{0} could road.".format(cog))
+            except Exception:
+                logger.warning("cog could not road;\n\n"
+                               "with this trackback:{0}\n"
+                               .format(sys.exc_info()))
+
+    async def on_ready(self):
+        logger.debug("---Loged in as {0.name}({0.id})---".format(self.user))
+        if(self.prfix == "!DEFAULT!"):
+            logger.debug("restart up app.")
+            cmd = "python app.py !{}!".format(self.user.name)
+            subprocess.Popen(cmd.split(), shell=True)
+            await self.logout()
+        else:
+            logger.debug("prefix is {}".format(self.prfix))
