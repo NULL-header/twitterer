@@ -1,6 +1,7 @@
 # encoding:utf-8
 import json
 import os
+import subprocess
 import sys
 from logging import getLogger
 
@@ -36,11 +37,16 @@ class Cmds(commands.Cog):
         logger.debug("check test.")
         await ctx.send("OK, {0} !".format(ctx.message.content))
 
-    @commands.command()
-    async def prfix(self, ctx):
-        prfix = await self.bot.get_prefix(ctx.message)
-        logger.debug("check prefix {}".format(prfix))
-        logger.debug("{}".format(type(prfix)))
+    @commands.command(name="prfix")
+    async def set_prefix(self, ctx, prfix: str = None):
+        if not prfix:
+            await ctx.send("please prefix")
+            return
+        else:
+            await ctx.send("restart")
+            cmd = "python app.py {}".format(prfix)
+            subprocess.Popen(cmd.split(), shell=True)
+            await self.bot.logout()
 
     @commands.command()
     async def sleep(self, ctx):
