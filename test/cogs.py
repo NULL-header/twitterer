@@ -19,6 +19,11 @@ bind_disp = \
     "clean:\n"\
     "    it delete channel id from list.\n"
 
+set_disp =\
+    "-----command list-----\n"\
+    "prefix:\n"\
+    "    it restert with new prefix.\n"
+
 
 class Cmds(commands.Cog):
     def __init__(self, bot):
@@ -37,13 +42,17 @@ class Cmds(commands.Cog):
         logger.debug("check test.")
         await ctx.send("OK, {0} !".format(ctx.message.content))
 
-    @commands.command(name="prfix")
+    @commands.group()
+    async def set(self, ctx):
+        if ctx.invoked_subcommand is None:
+            await ctx.send(set_disp)
+
+    @set.command(name="prefix")
     async def set_prefix(self, ctx, prfix: str = None):
         if not prfix:
             await ctx.send("please prefix")
-            return
         else:
-            await ctx.send("restart")
+            await ctx.send("restart.")
             cmd = "python app.py {}".format(prfix)
             subprocess.Popen(cmd.split(), shell=True)
             await self.bot.logout()
