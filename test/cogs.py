@@ -14,15 +14,27 @@ emoji = "\U0001F9E1"
 bind_disp = \
     "-----command list-----\n"\
     "set:\n"\
-    "    it put the channel where the command sended to the list.\n"\
-    "    other commands can work on the channel in the list.\n"\
+    "     It put the channel where the command sended to the list.\n"\
+    "     Other commands can only work on the channel in it.\n"\
     "clean:\n"\
-    "    it delete channel id from list.\n"
+    "     It delete channel-ids from the list.\n"
 
 set_disp =\
     "-----command list-----\n"\
     "prefix:\n"\
-    "    it restert with new prefix.\n"
+    "     It restert itself with new entered prefix as argment.\n"\
+    "id:\n"\
+    "     It put the entered twitter id in the list.\n"\
+    "list:\n"\
+    "     It can use when id which of the account have a target list is\n"\
+    "    entered.\n"\
+    "     It receive two argment, but it can work on single this.\n"\
+    "     When it receive one, it search list which the received id have.\n"\
+    "    Select in displayed lists; The list is put in the lists-list.\n"\
+    "     When it receive two argments, this function recongnize first\n"\
+    "    item as id, second item as list-name. And this list of the id is\n"\
+    "    put in the lists-list."\
+
 
 
 class Cmds(commands.Cog):
@@ -42,20 +54,30 @@ class Cmds(commands.Cog):
         logger.debug("check test.")
         await ctx.send("OK, {0} !".format(ctx.message.content))
 
-    @commands.group()
-    async def set(self, ctx):
+    @commands.group(name="set")
+    async def setter(self, ctx):
         if ctx.invoked_subcommand is None:
             await ctx.send(set_disp)
 
-    @set.command(name="prefix")
+    @setter.command(name="prefix")
     async def set_prefix(self, ctx, prfix: str = None):
         if not prfix:
-            await ctx.send("please prefix")
+            await ctx.send("Please put a prefix.")
         else:
             await ctx.send("restart.")
             cmd = "python app.py {}".format(prfix)
             subprocess.Popen(cmd.split(), shell=True)
             await self.bot.logout()
+
+    @setter.command(name="id")
+    async def set_id(self, ctx, id: str = None):
+        if not id:
+            await ctx.send("Put a id.")
+
+    @setter.command(name="list")
+    async def set_list(self, ctx, id: str = None, *, listname: str = None):
+        if not id:
+            await ctx.send("Put a list.")
 
     @commands.command()
     async def sleep(self, ctx):
@@ -94,7 +116,6 @@ class Cmds(commands.Cog):
     def botcmds(self):
         @self.bot.check
         async def block_dm(ctx):
-            logger.debug("check decorater worked.")
             return ctx.guild is not None
 
         @self.bot.event
