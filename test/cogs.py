@@ -6,8 +6,7 @@ import sys
 from logging import getLogger
 
 from discord.ext import commands
-
-from .twitterer import Mytwitterer
+from twitterer import Mytwitterer
 
 logger = getLogger("bot").getChild(__name__)
 path_bind = "..\\.data\\bind.json"
