@@ -5,7 +5,6 @@ import sys
 from logging import NullHandler, getLogger
 
 import discord
-import tweepy
 from discord.ext import commands
 
 logger = getLogger("bot")

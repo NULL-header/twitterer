@@ -7,6 +7,8 @@ from logging import getLogger
 
 from discord.ext import commands
 
+from .twitterer import Mytwitterer
+
 logger = getLogger("bot").getChild(__name__)
 path_bind = "..\\.data\\bind.json"
 emoji = "\U0001F9E1"
@@ -73,11 +75,17 @@ class Cmds(commands.Cog):
     async def set_id(self, ctx, id: str = None):
         if not id:
             await ctx.send("Put a id.")
+            return
 
     @setter.command(name="list")
     async def set_list(self, ctx, id: str = None, *, listname: str = None):
         if not id:
             await ctx.send("Put a list.")
+            return
+        if listname:
+            pass
+        else:
+            pass
 
     @commands.command()
     async def sleep(self, ctx):

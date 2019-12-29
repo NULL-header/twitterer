@@ -55,7 +55,7 @@ def read_keys(path: str) -> dict:
 
 def main():
     args = sys.argv
-    from bot import Bot
+    from .bot import Bot
     if len(args) == 1:
         logger.debug("args have no items.")
         bot = Bot()
