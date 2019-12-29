@@ -17,7 +17,7 @@ EXTENSIONS = [
 
 
 class Bot(commands.Bot):
-    def __init__(self, *, prfix="!DEFAULT!"):
+    def __init__(self, dict_keys: dict, *, prfix: str = "!DEFAULT!"):
         logger.debug("class Bot setting prfix to {0} on init.".format(prfix))
         super().__init__(prfix)
         self.prfix = prfix
@@ -39,3 +39,8 @@ class Bot(commands.Bot):
             await self.logout()
         else:
             logger.debug("prefix is {}".format(self.prfix))
+
+    def run(self):
+        try:
+            pass
+        pass

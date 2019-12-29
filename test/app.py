@@ -54,17 +54,16 @@ def read_keys(path: str) -> dict:
 def main():
     args = sys.argv
     from bot import Bot
-    dict_keys = read_keys("..\\.data\\key.txt")
     if len(args) == 1:
         logger.debug("args have no items.")
-        bot = Bot()
+        prfix = None
     else:
         logger.debug("args have items, {}.".format(args[1]))
-        bot = Bot(prfix=args[1])
+        prfix = args[1]
     try:
-        TOKEN = dict_keys["token"]
+        bot = Bot(read_keys("..\\.data\\key.txt"), prfix=prfix)
         logger.debug("bot run.")
-        bot.run(TOKEN)
+        bot.run()
     except Exception:
         logger.error("could not read token;\n\n"
                      "with this traceback:{0}\n".format(sys.exc_info()))
