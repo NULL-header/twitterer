@@ -54,20 +54,30 @@ class Cmds(commands.Cog):
         logger.debug("check test.")
         await ctx.send("OK, {0} !".format(ctx.message.content))
 
-    @commands.group()
-    async def set(self, ctx):
+    @commands.group(name="set")
+    async def setter(self, ctx):
         if ctx.invoked_subcommand is None:
             await ctx.send(set_disp)
 
-    @set.command(name="prefix")
+    @setter.command(name="prefix")
     async def set_prefix(self, ctx, prfix: str = None):
         if not prfix:
-            await ctx.send("please prefix")
+            await ctx.send("Please put a prefix.")
         else:
             await ctx.send("restart.")
             cmd = "python app.py {}".format(prfix)
             subprocess.Popen(cmd.split(), shell=True)
             await self.bot.logout()
+
+    @setter.command(name="id")
+    async def set_id(self, ctx, id: str = None):
+        if not id:
+            await ctx.send("Put a id.")
+
+    @setter.command(name="list")
+    async def set_list(self, ctx, id: str = None, *, listname: str = None):
+        if not id:
+            await ctx.send("Put a list.")
 
     @commands.command()
     async def sleep(self, ctx):
@@ -106,7 +116,6 @@ class Cmds(commands.Cog):
     def botcmds(self):
         @self.bot.check
         async def block_dm(ctx):
-            logger.debug("check decorater worked.")
             return ctx.guild is not None
 
         @self.bot.event
