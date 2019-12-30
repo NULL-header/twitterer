@@ -58,6 +58,15 @@ class Cmds(commands.Cog):
                 boo = True
         return boo
 
+    @staticmethod
+    def indexer(arg1, arg2: iter):
+        count = 0
+        for i in arg2:
+            if arg1 == i[0]:
+                return count
+            count += 1
+        return -1
+
     @commands.command()
     async def test(self, ctx):
         logger.debug("check test.")
@@ -83,7 +92,12 @@ class Cmds(commands.Cog):
         if not id:
             await ctx.send("Put a id.")
             return
-        self.bind_channel
+        bcg = self.bind_channel[str(ctx.guild.id)]
+        if id.startswith("@"):
+            id = id[1:]
+        bcg[self.indexer(ctx.channel.id, bcg)].append(id)
+        logger.debug(self.bind_channel)
+        await ctx.send("set twitter id.")
 
     @setter.command(name="list")
     async def set_list(self, ctx, id: str = None, *, listname: str = None):
