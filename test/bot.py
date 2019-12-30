@@ -1,4 +1,5 @@
 # encoding:utf-8
+import asyncio
 import os
 import subprocess
 import sys
@@ -21,6 +22,7 @@ class Bot(commands.Bot):
         logger.debug("class Bot setting prfix to {0} on init.".format(prfix))
         super().__init__(prfix)
         self.prfix = prfix
+        self.dict_keys = dict_keys
         for cog in EXTENSIONS:
             try:
                 self.load_extension(cog)
@@ -42,5 +44,9 @@ class Bot(commands.Bot):
 
     def run(self):
         try:
-            pass
-        pass
+            loop = asyncio.get_event_loop()
+            loop.run_until_complete(self.start(self.dict_keys["token"]))
+        except KyeboardInterrupt:
+            loop.run_until_complete(self.logout())
+        finally:
+            loop.close()

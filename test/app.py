@@ -56,7 +56,7 @@ def main():
     from bot import Bot
     if len(args) == 1:
         logger.debug("args have no items.")
-        prfix = None
+        prfix = "!DEFAULT!"
     else:
         logger.debug("args have items, {}.".format(args[1]))
         prfix = args[1]
