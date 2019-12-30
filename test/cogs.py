@@ -41,8 +41,6 @@ set_disp =\
 class Cmds(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        di = bot.dict_keys
-        self.tw = Mytwitterer(di["CK"], di["CS"], di["AT"], di["AS"])
         self.botcmds()
         if os.path.exists(path_bind):
             with open(path_bind, "r")as f:
@@ -51,6 +49,14 @@ class Cmds(commands.Cog):
         else:
             self.bind_channel = {}
             logger.debug("could not read bind.json.")
+
+    @staticmethod
+    def inchecker(arg1, arg2: iter):
+        boo = False
+        for i in arg2:
+            if arg1 == i[0]:
+                boo = True
+        return boo
 
     @commands.command()
     async def test(self, ctx):
@@ -77,6 +83,7 @@ class Cmds(commands.Cog):
         if not id:
             await ctx.send("Put a id.")
             return
+        self.bind_channel
 
     @setter.command(name="list")
     async def set_list(self, ctx, id: str = None, *, listname: str = None):
@@ -104,9 +111,9 @@ class Cmds(commands.Cog):
         gid = str(ctx.guild.id)
         if not self.bind_channel.get(gid):
             self.bind_channel[gid] = []
-        if ctx.channel.id not in self.bind_channel[gid]:
+        if not self.inchecker(ctx.channel.id, self.bind_channel[gid]):
             await ctx.send("here is binded.")
-            self.bind_channel[gid].append(ctx.channel.id)
+            self.bind_channel[gid].append([ctx.channel.id])
             with open(path_bind, "w")as f:
                 json.dump(self.bind_channel, f, indent=4)
         else:
@@ -118,6 +125,8 @@ class Cmds(commands.Cog):
         self.bind_channel = {}
         try:
             os.remove(path_bind)
+            await ctx.send("clean up.")
+            logger.debug(self.bind_channel)
         except Exception:
             logger.debug("no item on path_bind;\n\n"
                          "with this trackback:{}\n".format(sys.exc_info))
@@ -136,7 +145,8 @@ class Cmds(commands.Cog):
             else:
                 gid = str(msg.guild.id)
                 if self.bind_channel.get(gid):
-                    if msg.channel.id in self.bind_channel.get(gid):
+                    if self.inchecker(
+                            msg.channel.id, self.bind_channel.get(gid)):
                         if msg.content.startswith(self.bot.prfix):
                             logger.debug("the message has a command.")
                             await self.bot.process_commands(msg)
