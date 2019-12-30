@@ -1,11 +1,11 @@
 # encoding:utf-8
+import asyncio
 import os
 import subprocess
 import sys
 from logging import NullHandler, getLogger
 
 import discord
-import tweepy
 from discord.ext import commands
 
 logger = getLogger("bot")
@@ -18,10 +18,11 @@ EXTENSIONS = [
 
 
 class Bot(commands.Bot):
-    def __init__(self, *, prfix="!DEFAULT!"):
+    def __init__(self, dict_keys: dict, *, prfix: str = "!DEFAULT!"):
         logger.debug("class Bot setting prfix to {0} on init.".format(prfix))
         super().__init__(prfix)
         self.prfix = prfix
+        self.dict_keys = dict_keys
         for cog in EXTENSIONS:
             try:
                 self.load_extension(cog)
@@ -40,3 +41,6 @@ class Bot(commands.Bot):
             await self.logout()
         else:
             logger.debug("prefix is {}".format(self.prfix))
+
+    def wake(self):
+        self.run(self.dict_keys["token"])
