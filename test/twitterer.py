@@ -17,7 +17,7 @@ class Mytwitterer():
     def get_oauth(self):
         auth = tweepy.OAuthHandler(self.__CK, self.__CS)
         auth.set_access_token(self.__AT, self.__AS)
-        self.__api = tweepy.APi(auth)
+        self.__api = tweepy.API(auth)
 
     @property
     def api(self):

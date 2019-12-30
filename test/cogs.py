@@ -41,6 +41,8 @@ set_disp =\
 class Cmds(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        di = bot.dict_keys
+        self.tw = Mytwitterer(di["CK"], di["CS"], di["AT"], di["AS"])
         self.botcmds()
         if os.path.exists(path_bind):
             with open(path_bind, "r")as f:

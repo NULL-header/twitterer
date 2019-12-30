@@ -46,7 +46,7 @@ class Bot(commands.Bot):
         try:
             loop = asyncio.get_event_loop()
             loop.run_until_complete(self.start(self.dict_keys["token"]))
-        except KyeboardInterrupt:
+        except KeyboardInterrupt:
             loop.run_until_complete(self.logout())
         finally:
             loop.close()

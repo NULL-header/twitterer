@@ -42,7 +42,8 @@ def read_keys(path: str) -> dict:
             text = f.readlines()
             list_dict = []
             for t in text:
-                list_dict.append(tuple(t.split(":")))
+                list_dict.append(tuple(t.rstrip().split(":")))
+            logger.debug(dict(list_dict))
             return dict(list_dict)
     except Exception:
         logger.error("could not read key.txt;\n\n"
