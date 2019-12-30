@@ -64,7 +64,7 @@ def main():
     try:
         bot = Bot(read_keys("..\\.data\\key.txt"), prfix=prfix)
         logger.debug("bot run.")
-        bot.run()
+        bot.wake()
     except Exception:
         logger.error("could not read token;\n\n"
                      "with this traceback:{0}\n".format(sys.exc_info()))
