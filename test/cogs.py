@@ -34,8 +34,7 @@ set_disp =\
     "    Select in displayed lists; The list is put in the lists-list.\n"\
     "     When it receive two argments, this function recongnize first\n"\
     "    item as id, second item as list-name. And this list of the id is\n"\
-    "    put in the lists-list."\
-
+    "    put in the lists-list."
 
 
 class Cmds(commands.Cog):
@@ -45,10 +44,19 @@ class Cmds(commands.Cog):
         if os.path.exists(path_bind):
             with open(path_bind, "r")as f:
                 self.bind_channel = json.load(f)
+                self.recaller(self.bind_channel)
+
             logger.debug("could read bind.json.")
         else:
             self.bind_channel = {}
             logger.debug("could not read bind.json.")
+
+    def recaller(self, arg1: dict):
+        for i in arg1.values():
+            for j in i:
+                if j[1:]:
+                    di = self.bot.dict_keys
+                    j[1] = Mytwitterer(di["CK"], di["CS"], di["AT"], di["AS"])
 
     @staticmethod
     def inchecker(arg1, arg2: iter):
@@ -132,7 +140,8 @@ class Cmds(commands.Cog):
         if listname:
             pass
         else:
-            pass
+            bcg = self.bind_channel[str(ctx.guild.id)]
+            items = bcg[indexer(ctx.channel.id, bcg)]
 
     @commands.command()
     async def sleep(self, ctx):
