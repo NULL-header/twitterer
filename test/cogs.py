@@ -116,6 +116,8 @@ class Cmds(commands.Cog):
         if not items[2:]:
             items.append("")
         items[2] = id
+        self.bind_channel[str(ctx.guild.id)][self.indexer(
+            ctx.channel.id, bcg)] = items
         logger.debug(self.bind_channel)
         await ctx.send("set {} as twitter id.".format(id))
         self.dumper(path_bind, self.bind_channel)
