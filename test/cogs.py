@@ -67,10 +67,15 @@ class Cmds(commands.Cog):
             count += 1
         return -1
 
-    @staticmethod
-    def dumper(path: str, arg: dict):
+    def dumper(self, path: str, arg: dict):
         with open(path, "w")as f:
-            json.dump(arg, f, indent=4)
+            json.dump(arg, f, indent=4, default=self.support_default)
+
+    @staticmethod
+    def support_default(o):
+        if isinstance(o, Mytwitterer):
+            return "Mytwitterer_class"
+        raise TypeError(repr(o) + "is not JSON serializable")
 
     @commands.command()
     async def test(self, ctx):
@@ -100,24 +105,24 @@ class Cmds(commands.Cog):
             items.append("")
         di = self.bot.dict_keys
         items[1] = Mytwitterer(di["CK"], di["CS"], di["AT"], di["AS"])
+        await ctx.send("set ready.")
+        logger.debug(self.bind_channel)
 
     @setter.command(name="id")
     async def set_id(self, ctx, id: str = None):
         if not id:
-            await ctx.send("Put a id.")
+            await ctx.send("please put a id.")
             return
         if id.startswith("@"):
             id = id[1:]
         bcg = self.bind_channel[str(ctx.guild.id)]
         items = bcg[self.indexer(ctx.channel.id, bcg)]
         if not items[1:]:
-            await ctx.send("Set ready command.")
+            await ctx.send("please set ready command.")
             return
         if not items[2:]:
             items.append("")
         items[2] = id
-        self.bind_channel[str(ctx.guild.id)][self.indexer(
-            ctx.channel.id, bcg)] = items
         logger.debug(self.bind_channel)
         await ctx.send("set {} as twitter id.".format(id))
         self.dumper(path_bind, self.bind_channel)
@@ -163,6 +168,7 @@ class Cmds(commands.Cog):
         except Exception:
             logger.debug("no item on path_bind;\n\n"
                          "with this trackback:{}\n".format(sys.exc_info))
+            await ctx.send("cleaned up,yet.")
 
     def botcmds(self):
         @self.bot.check
