@@ -94,7 +94,12 @@ class Cmds(commands.Cog):
 
     @setter.command(name="ready")
     async def set_ready(self, ctx):
-        pass
+        bcg = self.bind_channel[str(ctx.guild.id)]
+        items = bcg[self.indexer(ctx.channel.id, bcg)]
+        if not items[1:]:
+            items.append("")
+        di = self.bot.dict_keys
+        items[1] = Mytwitterer(di["CK"], di["CS"], di["AT"], di["AS"])
 
     @setter.command(name="id")
     async def set_id(self, ctx, id: str = None):
@@ -104,13 +109,13 @@ class Cmds(commands.Cog):
         if id.startswith("@"):
             id = id[1:]
         bcg = self.bind_channel[str(ctx.guild.id)]
-        item = bcg[self.indexer(ctx.channel.id, bcg)]
-        if not item[1:]:
+        items = bcg[self.indexer(ctx.channel.id, bcg)]
+        if not items[1:]:
             await ctx.send("Set ready command.")
             return
-        if not item[2:]:
-            item.append("")
-        bcg[self.indexer(ctx.channel.id, bcg)][2] = id
+        if not items[2:]:
+            items.append("")
+        items[2] = id
         logger.debug(self.bind_channel)
         await ctx.send("set {} as twitter id.".format(id))
         self.dumper(path_bind, self.bind_channel)
