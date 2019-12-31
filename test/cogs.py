@@ -92,6 +92,10 @@ class Cmds(commands.Cog):
             subprocess.Popen(cmd.split(), shell=True)
             await self.bot.logout()
 
+    @setter.command(name="ready")
+    async def set_ready(self, ctx):
+        pass
+
     @setter.command(name="id")
     async def set_id(self, ctx, id: str = None):
         if not id:
@@ -102,16 +106,17 @@ class Cmds(commands.Cog):
         bcg = self.bind_channel[str(ctx.guild.id)]
         item = bcg[self.indexer(ctx.channel.id, bcg)]
         if not item[1:]:
+            await ctx.send("Set ready command.")
+            return
+        if not item[2:]:
             item.append("")
-        bcg[self.indexer(ctx.channel.id, bcg)][1] = id
+        bcg[self.indexer(ctx.channel.id, bcg)][2] = id
         logger.debug(self.bind_channel)
-        await ctx.send("set twitter id.")
+        await ctx.send("set {} as twitter id.".format(id))
+        self.dumper(path_bind, self.bind_channel)
 
     @setter.command(name="list")
-    async def set_list(self, ctx, id: str = None, *, listname: str = None):
-        if not id:
-            await ctx.send("Put a list.")
-            return
+    async def set_list(self, ctx, listname: str = None):
         if listname:
             pass
         else:
