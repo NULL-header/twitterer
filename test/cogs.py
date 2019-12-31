@@ -67,6 +67,11 @@ class Cmds(commands.Cog):
             count += 1
         return -1
 
+    @staticmethod
+    def dumper(path: str, arg: dict):
+        with open(path, "w")as f:
+            json.dump(arg, f, indent=4)
+
     @commands.command()
     async def test(self, ctx):
         logger.debug("check test.")
@@ -92,10 +97,13 @@ class Cmds(commands.Cog):
         if not id:
             await ctx.send("Put a id.")
             return
-        bcg = self.bind_channel[str(ctx.guild.id)]
         if id.startswith("@"):
             id = id[1:]
-        bcg[self.indexer(ctx.channel.id, bcg)].append(id)
+        bcg = self.bind_channel[str(ctx.guild.id)]
+        item = bcg[self.indexer(ctx.channel.id, bcg)]
+        if not item[1:]:
+            item.append("")
+        bcg[self.indexer(ctx.channel.id, bcg)][1] = id
         logger.debug(self.bind_channel)
         await ctx.send("set twitter id.")
 
@@ -128,8 +136,7 @@ class Cmds(commands.Cog):
         if not self.inchecker(ctx.channel.id, self.bind_channel[gid]):
             await ctx.send("here is binded.")
             self.bind_channel[gid].append([ctx.channel.id])
-            with open(path_bind, "w")as f:
-                json.dump(self.bind_channel, f, indent=4)
+            self.dumper(path_bind, self.bind_channel)
         else:
             await ctx.send("here was binded, yet.")
         logger.debug(self.bind_channel)
