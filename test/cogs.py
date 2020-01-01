@@ -146,14 +146,16 @@ class Cmds(commands.Cog):
             namelist = []
             chan = ctx.channel
             for i in listlist:
-                namelist.append(i.name)
-            for i in namelist:
+                namelist.append((i.name, i))
+            namelist = dict(namelist)
+            for i in namelist.keys():
                 await ctx.send(i)
 
             def check(m):
-                return m.content in namelist and m.channel == chan
+                return m.content in namelist.keys() and m.channel == chan
 
             msg = await self.bot.wait_for("message", check=check)
+
             await ctx.send(msg.content)
 
     @commands.command()
