@@ -155,8 +155,9 @@ class Cmds(commands.Cog):
                 return m.content in namelist.keys() and m.channel == chan
 
             msg = await self.bot.wait_for("message", check=check)
-
-            await ctx.send(msg.content)
+            items.append(namelist[msg.content])
+            await ctx.send("Set list.")
+            logger.debug(self.bind_channel)
 
     @commands.command()
     async def sleep(self, ctx):
