@@ -137,11 +137,12 @@ class Cmds(commands.Cog):
 
     @setter.command(name="list")
     async def set_list(self, ctx, listname: str = None):
+        bcg = self.bind_channel[str(ctx.guild.id)]
+        items = bcg[indexer(ctx.channel.id, bcg)]
         if listname:
             pass
         else:
-            bcg = self.bind_channel[str(ctx.guild.id)]
-            items = bcg[indexer(ctx.channel.id, bcg)]
+            pass
 
     @commands.command()
     async def sleep(self, ctx):
@@ -177,7 +178,7 @@ class Cmds(commands.Cog):
         except Exception:
             logger.debug("no item on path_bind;\n\n"
                          "with this trackback:{}\n".format(sys.exc_info))
-            await ctx.send("cleaned up,yet.")
+            await ctx.send("cleaned up, yet.")
 
     def botcmds(self):
         @self.bot.check
