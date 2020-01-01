@@ -8,7 +8,7 @@ from logging import getLogger
 from discord.ext import commands
 from twitterer import Mytwitterer
 
-logger = getLogger("bot").getChild(__name__)
+logger = getLogger("bot").getChild("csog")
 path_bind = "..\\.data\\bind.json"
 emoji = "\U0001F9E1"
 
@@ -45,7 +45,6 @@ class Cmds(commands.Cog):
             with open(path_bind, "r")as f:
                 self.bind_channel = json.load(f)
                 self.recaller(self.bind_channel)
-
             logger.debug("could read bind.json.")
         else:
             self.bind_channel = {}
@@ -138,7 +137,10 @@ class Cmds(commands.Cog):
     @setter.command(name="list")
     async def set_list(self, ctx, listname: str = None):
         bcg = self.bind_channel[str(ctx.guild.id)]
-        items = bcg[indexer(ctx.channel.id, bcg)]
+        items = bcg[self.indexer(ctx.channel.id, bcg)]
+        listlist = items[1].search_list(items[2])
+        for i in listlist:
+            logger.debug(i)
         if listname:
             pass
         else:

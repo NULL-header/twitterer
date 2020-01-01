@@ -1,5 +1,9 @@
 # encoding:utf-8
+from logging import getLogger
+
 import tweepy
+
+logger = getLogger("cog").getChild(__name__)
 
 
 class Mytwitterer():
@@ -22,3 +26,10 @@ class Mytwitterer():
     @property
     def api(self):
         return self.__api
+
+    def search_list(self, id: str) -> list:
+        try:
+            logger.debug("test")
+            return self.api.lists_all(id)
+        except Exception:
+            logger.warning("cannot read list from twitter id.")
