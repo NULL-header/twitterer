@@ -3,8 +3,8 @@
 pushd %~dp0
 
 setlocal
-set fold=test
-set file=dict_database.py
+set fold=doc
+set file=app.py
 
 call :Generater
 call :MDChecker

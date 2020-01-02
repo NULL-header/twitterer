@@ -32,6 +32,3 @@ class Mytwitterer():
             return self.api.lists_all(id)
         except Exception:
             logger.warning("cannot read list from twitter id.")
-
-    @classmethod
-    def instance
