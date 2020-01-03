@@ -1,4 +1,5 @@
 # encoding:utf-8
+import os
 from logging import getLogger
 
 import tweepy
@@ -35,3 +36,4 @@ class Mytwitterer():
             return listlist
         except Exception:
             logger.warning("cannot read list from twitter id.")
+            return None

@@ -23,18 +23,21 @@ bind_disp = \
 set_disp =\
     "-----command list-----\n"\
     "prefix:\n"\
-    "     It restert itself with new entered prefix as argment.\n"\
+    "     It restart itself with new entered prefix as argment.\n"\
+    "ready:\n"\
+    "     It set internal data with twitter Oauth authentication on first.\n"\
     "id:\n"\
-    "     It put the entered twitter id in the list.\n"\
+    "     It put the entered twitter id in the internal data.\n"\
     "list:\n"\
-    "     It can use when id which of the account have a target list is\n"\
+    "     It can use when id which of the account have the target list is\n"\
     "    entered.\n"\
-    "     It receive two argment, but it can work on single this.\n"\
-    "     When it receive one, it search list which the received id have.\n"\
-    "    Select in displayed lists; The list is put in the lists-list.\n"\
-    "     When it receive two argments, this function recongnize first\n"\
-    "    item as id, second item as list-name. And this list of the id is\n"\
-    "    put in the lists-list."
+    "     It recieve one argument, but it can work without this item.\n"\
+    "     When it do not receive any of arguments, this function search\n"\
+    "    some lists which the account of the id have.\n"\
+    "    Select in displayed lists; the list is put to internal data.\n"\
+    "     When it get a argment, if there is string the argment in list\n"\
+    "    which the account of the id in the data have, this function put\n"\
+    "    this to internal data.\n"
 
 
 class Cmds(commands.Cog):
@@ -112,7 +115,8 @@ class Cmds(commands.Cog):
         items = self.bind_channel[str(ctx.guild.id)][str(ctx.channel.id)]
         listlist = items["twitterer"].search_list(items["id"])
         if listname:
-            pass
+            if listname in listlist:
+                items["slug"] = listname
         else:
             chan = ctx.channel
             for i in listlist:
@@ -120,11 +124,15 @@ class Cmds(commands.Cog):
 
             def check(m):
                 return m.content in listlist and m.channel == chan
-
-            msg = await self.bot.wait_for("message", check=check)
+            msg = None
+            while not msg:
+                try:
+                    msg = await self.bot.wait_for("message", check=check)
+                except:
+                    await ctx.send("That message is invalid.")
             items["slug"] = msg.content
-            await ctx.send("Set list.")
-            logger.debug(self.bind_channel)
+        await ctx.send("Set list.")
+        logger.debug(self.bind_channel)
 
     @commands.command()
     async def sleep(self, ctx):
