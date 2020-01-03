@@ -1,6 +1,6 @@
 # encoding:utf-8
-import json
 import os
+import pickle
 import subprocess
 import sys
 from logging import getLogger
@@ -9,7 +9,7 @@ from discord.ext import commands
 from twitterer import Mytwitterer
 
 logger = getLogger("bot").getChild(__name__)
-path_bind = "..\\.data\\bind.json"
+path_bind = "..\\.data\\bind.pickle"
 emoji = "\U0001F9E1"
 
 bind_disp = \
@@ -40,50 +40,27 @@ set_disp =\
 class Cmds(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.iswait = False
         self.botcmds()
         if os.path.exists(path_bind):
-            with open(path_bind, "r")as f:
-                self.bind_channel = json.load(f)
-                self.recaller(self.bind_channel)
-            logger.debug("could read bind.json.")
+            with open(path_bind, "rb")as f:
+                self.bind_channel = pickle.load(f)
+            logger.debug("could read bind.pickle.")
         else:
             self.bind_channel = {}
-            logger.debug("could not read bind.json.")
-
-    def recaller(self, arg1: dict):
-        for i in arg1.values():
-            for j in i:
-                if j[1:]:
-                    di = self.bot.dict_keys
-                    j[1] = Mytwitterer(di["CK"], di["CS"], di["AT"], di["AS"])
+            logger.debug("could not read bind.pickle.")
 
     @staticmethod
-    def inchecker(arg1, arg2: iter):
-        boo = False
-        for i in arg2:
-            if arg1 == i[0]:
-                boo = True
-        return boo
-
-    @staticmethod
-    def indexer(arg1, arg2: iter):
-        count = 0
-        for i in arg2:
-            if arg1 == i[0]:
-                return count
-            count += 1
-        return -1
+    def childer(*, id: str = None, slug: str = None,
+                twitterer: str = None) -> dict:
+        return {
+            "id": id,
+            "slug": slug,
+            "twitterer": twitterer,
+        }
 
     def dumper(self, path: str, arg: dict):
-        with open(path, "w")as f:
-            json.dump(arg, f, indent=4, default=self.support_default)
-
-    @staticmethod
-    def support_default(o):
-        if isinstance(o, Mytwitterer):
-            return "Mytwitterer_class"
-        raise TypeError(repr(o) + "is not JSON serializable")
+        with open(path, "wb")as f:
+            pickle.dump(self.bind_channel, f)
 
     @commands.command()
     async def test(self, ctx):
@@ -173,10 +150,10 @@ class Cmds(commands.Cog):
     async def set_bind(self, ctx):
         gid = str(ctx.guild.id)
         if not self.bind_channel.get(gid):
-            self.bind_channel[gid] = []
-        if not self.inchecker(ctx.channel.id, self.bind_channel[gid]):
+            self.bind_channel[gid] = {}
+        if not self.bind_channel[gid].get(ctx.channel.id):
             await ctx.send("here is binded.")
-            self.bind_channel[gid].append([ctx.channel.id])
+            self.bind_channel[gid][ctx.channel.id] = childer()
             self.dumper(path_bind, self.bind_channel)
         else:
             await ctx.send("here was binded, yet.")
