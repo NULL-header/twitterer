@@ -29,6 +29,9 @@ class Mytwitterer():
 
     def search_list(self, id: str) -> list:
         try:
-            return self.api.lists_all(id)
+            listlist = []
+            for i in self.api.lists_all(id):
+                listlist.append(i.name)
+            return listlist
         except Exception:
             logger.warning("cannot read list from twitter id.")
