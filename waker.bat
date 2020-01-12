@@ -3,7 +3,7 @@
 pushd %~dp0
 
 setlocal
-set fold=test
+set fold=doc
 set file=app.py
 
 call :Generater

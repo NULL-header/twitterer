@@ -35,7 +35,7 @@ logger.debug("set up.")
 def read_keys(path: str) -> dict:
     '''
     this function is only to read token.
-    if key.txt does not exist, log show FileNotFoundError and Type Error.
+    if key.txt does not exist, log shows FileNotFoundError and Type Error.
     '''
     try:
         with open(path, "r")as f:
@@ -54,7 +54,6 @@ def read_keys(path: str) -> dict:
 
 def main():
     args = sys.argv
-    from bot import Bot
     if len(args) == 1:
         logger.debug("args have no items.")
         prfix = "!DEFAULT!"
@@ -62,6 +61,7 @@ def main():
         logger.debug("args have items, {}.".format(args[1]))
         prfix = args[1]
     try:
+        from bot import Bot
         bot = Bot(read_keys("..\\.data\\key.txt"), prfix=prfix)
         logger.debug("bot run.")
         bot.wake()

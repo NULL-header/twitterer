@@ -1,0 +1,9 @@
+{
+    "test_guild": {
+        "test_channel": {
+            "twitterer": "Mytwitterer_class",
+            "id": "example",
+            "slug": "testlist"
+        }
+    }
+}

@@ -1,6 +1,6 @@
 # encoding:utf-8
-import json
 import os
+import pickle
 import subprocess
 import sys
 from logging import getLogger
@@ -9,7 +9,7 @@ from discord.ext import commands
 from twitterer import Mytwitterer
 
 logger = getLogger("bot").getChild(__name__)
-path_bind = "..\\.data\\bind.json"
+path_bind = "..\\.data\\bind.pickle"
 emoji = "\U0001F9E1"
 
 bind_disp = \
@@ -23,19 +23,21 @@ bind_disp = \
 set_disp =\
     "-----command list-----\n"\
     "prefix:\n"\
-    "     It restert itself with new entered prefix as argment.\n"\
+    "     It restart itself with new entered prefix as argment.\n"\
+    "ready:\n"\
+    "     It set internal data with twitter Oauth authentication on first.\n"\
     "id:\n"\
-    "     It put the entered twitter id in the list.\n"\
+    "     It put the entered twitter id in the internal data.\n"\
     "list:\n"\
-    "     It can use when id which of the account have a target list is\n"\
+    "     It can use when id which of the account have the target list is\n"\
     "    entered.\n"\
-    "     It receive two argment, but it can work on single this.\n"\
-    "     When it receive one, it search list which the received id have.\n"\
-    "    Select in displayed lists; The list is put in the lists-list.\n"\
-    "     When it receive two argments, this function recongnize first\n"\
-    "    item as id, second item as list-name. And this list of the id is\n"\
-    "    put in the lists-list."\
-
+    "     It recieve one argument, but it can work without this item.\n"\
+    "     When it do not receive any of arguments, this function search\n"\
+    "    some lists which the account of the id have.\n"\
+    "    Select in displayed lists; the list is put to internal data.\n"\
+    "     When it get a argment, if there is string the argment in list\n"\
+    "    which the account of the id in the data have, this function put\n"\
+    "    this to internal data.\n"
 
 
 class Cmds(commands.Cog):
@@ -43,20 +45,25 @@ class Cmds(commands.Cog):
         self.bot = bot
         self.botcmds()
         if os.path.exists(path_bind):
-            with open(path_bind, "r")as f:
-                self.bind_channel = json.load(f)
-            logger.debug("could read bind.json.")
+            with open(path_bind, "rb")as f:
+                self.bind_channel = pickle.load(f)
+            logger.debug("could read bind.pickle.")
         else:
             self.bind_channel = {}
-            logger.debug("could not read bind.json.")
+            logger.debug("could not read bind.pickle.")
 
     @staticmethod
-    def inchecker(arg1, arg2: iter):
-        boo = False
-        for i in arg2:
-            if arg1 == i[0]:
-                boo = True
-        return boo
+    def childer(*, id: str = None, slug: str = None,
+                twitterer: str = None) -> dict:
+        return {
+            "id": id,
+            "slug": slug,
+            "twitterer": twitterer,
+        }
+
+    def dumper(self, path: str, arg: dict):
+        with open(path, "wb")as f:
+            pickle.dump(self.bind_channel, f)
 
     @commands.command()
     async def test(self, ctx):
@@ -78,22 +85,54 @@ class Cmds(commands.Cog):
             subprocess.Popen(cmd.split(), shell=True)
             await self.bot.logout()
 
+    @setter.command(name="ready")
+    async def set_ready(self, ctx):
+        items = self.bind_channel[str(ctx.guild.id)][str(ctx.channel.id)]
+        di = self.bot.dict_keys
+        items["twitterer"] = \
+            Mytwitterer(di["CK"], di["CS"], di["AT"], di["AS"])
+        await ctx.send("set ready.")
+        logger.debug(self.bind_channel)
+
     @setter.command(name="id")
     async def set_id(self, ctx, id: str = None):
         if not id:
-            await ctx.send("Put a id.")
+            await ctx.send("please put a id.")
             return
-        self.bind_channel
+        if id.startswith("@"):
+            id = id[1:]
+        items = self.bind_channel[str(ctx.guild.id)][str(ctx.channel.id)]
+        if not items["twitterer"]:
+            await ctx.send("please set ready command.")
+            return
+        items["id"] = id
+        logger.debug(self.bind_channel)
+        await ctx.send("set {} as twitter id.".format(id))
+        self.dumper(path_bind, self.bind_channel)
 
     @setter.command(name="list")
-    async def set_list(self, ctx, id: str = None, *, listname: str = None):
-        if not id:
-            await ctx.send("Put a list.")
-            return
+    async def set_list(self, ctx, listname: str = None):
+        items = self.bind_channel[str(ctx.guild.id)][str(ctx.channel.id)]
+        listlist = items["twitterer"].search_list(items["id"])
         if listname:
-            pass
+            if listname in listlist:
+                items["slug"] = listname
         else:
-            pass
+            chan = ctx.channel
+            for i in listlist:
+                await ctx.send(i)
+
+            def check(m):
+                return m.content in listlist and m.channel == chan
+            msg = None
+            while not msg:
+                try:
+                    msg = await self.bot.wait_for("message", check=check)
+                except:
+                    await ctx.send("That message is invalid.")
+            items["slug"] = msg.content
+        await ctx.send("Set list.")
+        logger.debug(self.bind_channel)
 
     @commands.command()
     async def sleep(self, ctx):
@@ -110,12 +149,11 @@ class Cmds(commands.Cog):
     async def set_bind(self, ctx):
         gid = str(ctx.guild.id)
         if not self.bind_channel.get(gid):
-            self.bind_channel[gid] = []
-        if not self.inchecker(ctx.channel.id, self.bind_channel[gid]):
+            self.bind_channel[gid] = {}
+        if not self.bind_channel[gid].get(str(ctx.channel.id)):
             await ctx.send("here is binded.")
-            self.bind_channel[gid].append([ctx.channel.id])
-            with open(path_bind, "w")as f:
-                json.dump(self.bind_channel, f, indent=4)
+            self.bind_channel[gid][str(ctx.channel.id)] = self.childer()
+            self.dumper(path_bind, self.bind_channel)
         else:
             await ctx.send("here was binded, yet.")
         logger.debug(self.bind_channel)
@@ -129,7 +167,8 @@ class Cmds(commands.Cog):
             logger.debug(self.bind_channel)
         except Exception:
             logger.debug("no item on path_bind;\n\n"
-                         "with this trackback:{}\n".format(sys.exc_info))
+                         "with this trackback:{}\n".format(sys.exc_info()))
+            await ctx.send("cleaned up, yet.")
 
     def botcmds(self):
         @self.bot.check
@@ -145,8 +184,7 @@ class Cmds(commands.Cog):
             else:
                 gid = str(msg.guild.id)
                 if self.bind_channel.get(gid):
-                    if self.inchecker(
-                            msg.channel.id, self.bind_channel.get(gid)):
+                    if self.bind_channel[gid].get(str(msg.channel.id)):
                         if msg.content.startswith(self.bot.prfix):
                             logger.debug("the message has a command.")
                             await self.bot.process_commands(msg)
