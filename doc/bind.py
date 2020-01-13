@@ -1,4 +1,5 @@
 # encoding:utf-8
+import pickle
 
 
 class Bind(object):
@@ -14,8 +15,8 @@ class Bind(object):
             result = 201
             return result
         try:
-            with open(path_data, "r")as f:
-                pass
+            with open(path_data, "rb")as f:
+                self.data = pickle.load(f)
             result = 100
         except Exception:
             result = 302
