@@ -2,33 +2,38 @@
 
 
 class Bind(object):
-    path_data = "..\\.data\\aa"
-    path_err = "..\\.data\\errcode.txt"
-
     def __init__(self):
         self.data = {}
 
-    def read_data(self):
+    def read_data(self, path_data, path_err):
+        result = 0
         try:
-            with open(Bind.path_err, "r")as f:
+            with open(path_err, "r")as f:
                 data = f.readlines()
         except Exception:
-            return 1
+            result = 201
+            return result
+        try:
+            with open(path_data, "r")as f:
+                pass
+            result = 100
+        except Exception:
+            result = 302
         buff = []
         for i in data:
-            buff.append(tuple(i.rstrip().split(":")))
+            bu = i.rstrip().split(":")
+            buff.append(tuple([int(bu[0]), bu[1]]))
         self.err = dict(buff)
-        print(self.err)
-        return 0
+        return result
 
     def set_bind(self, gid, cid):
         d = self.data
         if not d.get(gid):
             d[gid] = {}
         if d[gid].get(cid):
-            return 1
+            return 301
         d[gid][cid] = self._childer()
-        return 0
+        return 100
 
     @staticmethod
     def _childer():
@@ -38,5 +43,5 @@ class Bind(object):
             "slug": None
         }
 
-    def _returner(self, code):
-        pass
+    def returner(self, code):
+        return self.err[code]

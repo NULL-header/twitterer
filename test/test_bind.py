@@ -14,9 +14,12 @@ finally:
 class TestBind1(unittest.TestCase):
     def setUp(self):
         self.b = Bind()
+        result = self.b.read_data("..\\.data\\aa", "..\\.data\\errcode.txt")
+        self.assertEqual(result, 302)
 
     def test_new(self):
-        self.assertEqual({}, self.b.data)
+        b = Bind()
+        self.assertEqual({}, b.data)
 
     def test_set_bind(self):
         gid = 11111111
@@ -31,9 +34,9 @@ class TestBind1(unittest.TestCase):
                 }
             }
         }
-        self.assertEqual(result, 0)
+        self.assertEqual(result, 100)
         self.assertEqual(self.b.data, testcase)
-        self.assertEqual(self.b.set_bind(gid, cid), 1)
+        self.assertEqual(self.b.set_bind(gid, cid), 301)
 
     def test_(self):
         pass
@@ -51,9 +54,7 @@ class TestBind1(unittest.TestCase):
 class TestBind2(unittest.TestCase):
 
     def setUp(self):
-        self.b = Bind()
-        result = self.b.read_data()
-        self.assertEqual(result, 0)
+        pass
 
     def test_(self):
         pass
