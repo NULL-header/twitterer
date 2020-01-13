@@ -33,6 +33,8 @@ class TestBind1(unittest.TestCase):
         result = self.b.read_data(path_data, path_err)
         self.assertEqual(result, 100)
         self.assertTrue(bool(self.b.data))
+        os.remove(path_err)
+        os.remove(path_data)
 
     def test_new(self):
         b = Bind()
@@ -55,8 +57,13 @@ class TestBind1(unittest.TestCase):
         self.assertEqual(self.b.data, testcase)
         self.assertEqual(self.b.set_bind(gid, cid), 301)
 
-    def test_(self):
-        pass
+    def test_check_bind(self):
+        gid = 111
+        cid = 222
+        self.b.set_bind(gid, cid)
+        self.assertEqual(self.b.check_bind(gid, cid), [True, 100])
+        self.assertEqual(self.b.check_bind(1, cid), [False, 303])
+        self.assertEqual(self.b.check_bind(gid, 1), [False, 304])
 
     def test_(self):
         pass

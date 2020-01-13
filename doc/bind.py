@@ -44,5 +44,12 @@ class Bind(object):
             "slug": None
         }
 
-    def returner(self, code):
+    def check_bind(self, gid, cid):
+        if not self.data.get(gid):
+            return [False, 303]
+        if not self.data[gid].get(cid):
+            return [False, 304]
+        return [True, 100]
+
+    def err_returner(self, code):
         return self.err[code]
