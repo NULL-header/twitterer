@@ -3,8 +3,8 @@
 pushd %~dp0
 
 setlocal
-set fold=doc
-set file=app.py
+set fold=test
+set file=test_bind.py
 
 call :Generater
 call :MDChecker
@@ -15,7 +15,7 @@ echo all green.
 call .data\.venv\Scripts\activate
 
 pushd %fold%
-python %file%
+python %file% -v
 
 popd
 popd

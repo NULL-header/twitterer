@@ -128,7 +128,7 @@ class Cmds(commands.Cog):
             while not msg:
                 try:
                     msg = await self.bot.wait_for("message", check=check)
-                except:
+                except Exception:
                     await ctx.send("That message is invalid.")
             items["slug"] = msg.content
         await ctx.send("Set list.")
