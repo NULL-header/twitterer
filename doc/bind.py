@@ -71,5 +71,10 @@ class Bind(object):
         self.data = {}
         return result
 
-    def set_id(self):
-        pass
+    def set_id(self, gid, cid, id):
+        if not id:
+            return 306
+        if id.startswith("@"):
+            id = id[1:]
+        self.data[gid][cid]["id"] = id
+        return 100

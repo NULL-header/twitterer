@@ -76,7 +76,14 @@ class TestBind1(unittest.TestCase):
         self.assertEqual(305, result)
 
     def test_set_id(self):
-        pass
+        self.b.set_bind(1, 2)
+        result = self.b.set_id(1, 2, "aaaa")
+        self.assertEqual(result, 100)
+        self.assertEqual(self.b.data[1][2]["id"], "aaaa")
+        self.b.set_id(1, 2, "@aaa")
+        self.assertEqual(self.b.data[1][2]["id"], "aaa")
+        result = self.b.set_id(1, 2, None)
+        self.assertEqual(result, 306)
 
     def test_(self):
         pass
