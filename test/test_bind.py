@@ -8,15 +8,33 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..\\doc'))
 
 try:
     from bind import Bind
+    from twitterer import Mytwitterer
 finally:
     pass
 
 
 class TestBind1(unittest.TestCase):
     def setUp(self):
-        self.b = Bind()
+        with open("..\\.data\\key.txt", "r")as f:
+            text = f.readlines()
+            list_dict = []
+            for t in text:
+                list_dict.append(tuple(t.rstrip().split(":")))
+        ld = dict(list_dict)
         self.path_data = "testdata.pickle"
         self.path_err = "..\\.data\\errcode.txt"
+        d = {
+            "pd": self.path_data,
+            "pe": self.path_err,
+            "ck": ld["CK"],
+            "cs": ld["CS"],
+            "at": ld["AT"],
+            "as": ld["AS"],
+        }
+        self.d = d
+        self.b = Bind()
+        result = self.b.setter(d)
+        self.assertEqual(100, result)
         result = self.b.read_data(self.path_data, self.path_err)
         self.assertEqual(result, 302)
 
@@ -49,7 +67,8 @@ class TestBind1(unittest.TestCase):
         testcase = {
             gid: {
                 cid: {
-                    "tw": None,
+                    "tw": Mytwitterer(self.d["ck"], self.d["cs"],
+                                      self.d["at"], self.d["as"]),
                     "id": None,
                     "slug": None
                 }
@@ -84,6 +103,26 @@ class TestBind1(unittest.TestCase):
         self.assertEqual(self.b.data[1][2]["id"], "aaa")
         result = self.b.set_id(1, 2, None)
         self.assertEqual(result, 306)
+
+    def test_setter(self):
+        data_dict = {
+            "pd": "a",
+            "pe": "b",
+            "ck": "c",
+            "cs": "d",
+            "at": "e",
+            "as": "f",
+        }
+        self.assertEqual(self.b.setter(data_dict), 100)
+        self.assertEqual(self.b.path_data, "a")
+        self.assertEqual(self.b.path_err, "b")
+        self.assertEqual(self.b.CK, "c")
+        self.assertEqual(self.b.CS, "d")
+        self.assertEqual(self.b.AT, "e")
+        self.assertEqual(self.b.AS, "f")
+
+    def test_(self):
+        pass
 
     def test_(self):
         pass

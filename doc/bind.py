@@ -2,6 +2,8 @@
 import os
 import pickle
 
+from twitterer import Mytwitterer
+
 
 class Bind(object):
     def __init__(self):
@@ -39,10 +41,9 @@ class Bind(object):
         d[gid][cid] = self._childer()
         return 100
 
-    @staticmethod
-    def _childer():
+    def _childer(self):
         return{
-            "tw": None,
+            "tw": Mytwitterer(self.CK, self.CS, self.AT, self.AS),
             "id": None,
             "slug": None
         }
@@ -77,4 +78,13 @@ class Bind(object):
         if id.startswith("@"):
             id = id[1:]
         self.data[gid][cid]["id"] = id
+        return 100
+
+    def setter(self, d: dict):
+        self.path_data = d["pd"]
+        self.path_err = d["pe"]
+        self.CK = d["ck"]
+        self.CS = d["cs"]
+        self.AT = d["at"]
+        self.AS = d["as"]
         return 100

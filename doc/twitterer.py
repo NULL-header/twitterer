@@ -7,7 +7,7 @@ import tweepy
 logger = getLogger("bot").getChild(__name__)
 
 
-class Mytwitterer():
+class Mytwitterer(object):
     counter = 0
     path_ram = "..\\.data\\"
 
@@ -19,6 +19,9 @@ class Mytwitterer():
             self.__AS = AS
             self.get_oauth()
             Mytwitterer.counter += 1
+
+    def __eq__(self, other):
+        return self.__class__.__name__ == other.__class__.__name__
 
     def get_oauth(self):
         auth = tweepy.OAuthHandler(self.__CK, self.__CS)
@@ -42,8 +45,8 @@ class Mytwitterer():
     def get_list(self, id, slug):
         list_tweets = []
         dict_kwd = {
-            "owner_screen_name": id
-            "slug": slug
+            "owner_screen_name": id,
+            "slug": slug,
             "include_rts": "True",
             "count": self.__kazu,
             "tweet_mode": "extended",
