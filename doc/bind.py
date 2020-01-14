@@ -7,6 +7,8 @@ class Bind(object):
         self.data = {}
 
     def read_data(self, path_data, path_err):
+        self.path_data = path_data
+        self.path_err = path_err
         result = 0
         try:
             with open(path_err, "r")as f:
@@ -53,3 +55,7 @@ class Bind(object):
 
     def err_returner(self, code):
         return self.err[code]
+
+    def _dumper(self):
+        with open(self.path_data, "wb")as f:
+            pickle.dump(self.data, f)

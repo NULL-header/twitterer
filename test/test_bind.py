@@ -15,7 +15,9 @@ finally:
 class TestBind1(unittest.TestCase):
     def setUp(self):
         self.b = Bind()
-        result = self.b.read_data("..\\.data\\aa", "..\\.data\\errcode.txt")
+        self.path_data = "testdata.pickle"
+        self.path_err = "..\\.data\\errcode.txt"
+        result = self.b.read_data(self.path_data, self.path_err)
         self.assertEqual(result, 302)
 
     def test_read_data(self):
@@ -68,9 +70,6 @@ class TestBind1(unittest.TestCase):
     def test_(self):
         pass
 
-    def test_(self):
-        pass
-
     def tearDown(self):
         pass
 
@@ -78,7 +77,11 @@ class TestBind1(unittest.TestCase):
 class TestBind2(unittest.TestCase):
 
     def setUp(self):
-        pass
+        self.b = Bind()
+        self.path_data = "testdata.pickle"
+        self.path_err = "..\\.data\\errcode.txt"
+        result = self.b.read_data(self.path_data, self.path_err)
+        self.assertEqual(result, 302)
 
     def test_(self):
         pass
@@ -90,7 +93,10 @@ class TestBind2(unittest.TestCase):
         pass
 
     def tearDown(self):
-        pass
+        try:
+            os.remove(self.path_data)
+        except Exception:
+            pass
 
 
 if __name__ == "__main__":
