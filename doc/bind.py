@@ -1,4 +1,5 @@
 # encoding:utf-8
+import os
 import pickle
 
 
@@ -59,3 +60,16 @@ class Bind(object):
     def _dumper(self):
         with open(self.path_data, "wb")as f:
             pickle.dump(self.data, f)
+
+    def clean_bind(self):
+        result = 0
+        try:
+            os.remove(self.path_data)
+            result = 100
+        except Exception:
+            result = 305
+        self.data = {}
+        return result
+
+    def set_id(self):
+        pass

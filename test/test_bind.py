@@ -67,11 +67,25 @@ class TestBind1(unittest.TestCase):
         self.assertEqual(self.b.check_bind(1, cid), [False, 303])
         self.assertEqual(self.b.check_bind(gid, 1), [False, 304])
 
+    def test_clean_bind(self):
+        with open(self.path_data, "w")as f:
+            f.write("a")
+        result = self.b.clean_bind()
+        self.assertEqual(100, result)
+        result = self.b.clean_bind()
+        self.assertEqual(305, result)
+
+    def test_set_id(self):
+        pass
+
     def test_(self):
         pass
 
     def tearDown(self):
-        pass
+        try:
+            os.remove(self.path_data)
+        except Exception:
+            pass
 
 
 class TestBind2(unittest.TestCase):
@@ -86,17 +100,8 @@ class TestBind2(unittest.TestCase):
     def test_(self):
         pass
 
-    def test_(self):
-        pass
-
-    def test_(self):
-        pass
-
     def tearDown(self):
-        try:
-            os.remove(self.path_data)
-        except Exception:
-            pass
+        pass
 
 
 if __name__ == "__main__":
