@@ -35,11 +35,21 @@ class TestBind1(unittest.TestCase):
         self.b = Bind()
         result = self.b.setter(d)
         self.assertEqual(100, result)
-        result = self.b.read_data(self.path_data, self.path_err)
+        result = self.b.read_data()
         self.assertEqual(result, 302)
 
     def test_read_data(self):
-        result = self.b.read_data("a", "b")
+        d_test = {
+            "pd": "a",
+            "pe": "b",
+            "ck": self.d["ck"],
+            "cs": self.d["cs"],
+            "at": self.d["at"],
+            "as": self.d["as"],
+        }
+        result = self.b.setter(d_test)
+        self.assertEqual(100, result)
+        result = self.b.read_data()
         self.assertEqual(result, 201)
         path_err = "testcase_read_data_err.txt"
         path_data = "testcase_read_data_data.pickle"
@@ -48,9 +58,15 @@ class TestBind1(unittest.TestCase):
             f.write(text)
         with open(path_data, "wb")as f:
             pickle.dump({1: None}, f)
-        result = self.b.read_data("a", path_err)
+        d_test["pe"] = path_err
+        result = self.b.setter(d_test)
+        self.assertEqual(100, result)
+        result = self.b.read_data()
         self.assertEqual(result, 302)
-        result = self.b.read_data(path_data, path_err)
+        d_test["pd"] = path_data
+        result = self.b.setter(d_test)
+        self.assertEqual(100, result)
+        result = self.b.read_data()
         self.assertEqual(result, 100)
         self.assertTrue(bool(self.b.data))
         os.remove(path_err)
@@ -132,22 +148,6 @@ class TestBind1(unittest.TestCase):
             os.remove(self.path_data)
         except Exception:
             pass
-
-
-class TestBind2(unittest.TestCase):
-
-    def setUp(self):
-        self.b = Bind()
-        self.path_data = "testdata.pickle"
-        self.path_err = "..\\.data\\errcode.txt"
-        result = self.b.read_data(self.path_data, self.path_err)
-        self.assertEqual(result, 302)
-
-    def test_(self):
-        pass
-
-    def tearDown(self):
-        pass
 
 
 if __name__ == "__main__":
