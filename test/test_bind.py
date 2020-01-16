@@ -137,6 +137,21 @@ class TestBind1(unittest.TestCase):
         self.assertEqual(self.b.AT, "e")
         self.assertEqual(self.b.AS, "f")
 
+    def test_set_list(self):
+        result = self.b.set_bind(1, 2)
+        self.assertEqual(result, 100)
+        result = self.b.set_list(1, 2, "b")
+        self.assertEqual(result, 307)
+        result = self.b.set_id(1, 2, "a")
+        self.assertEqual("a", self.b.data[1][2]["id"])
+        self.assertEqual(result, 100)
+        result = self.b.set_list(1, 2, "b")
+        self.assertEqual(100, result)
+        self.assertEqual("b", self.b.data[1][2]["slug"])
+
+    def test_(self):
+        pass
+
     def test_(self):
         pass
 

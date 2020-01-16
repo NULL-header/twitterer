@@ -86,3 +86,9 @@ class Bind(object):
         self.AT = d["at"]
         self.AS = d["as"]
         return 100
+
+    def set_list(self, gid, cid, listname):
+        if not self.data[gid][cid]["id"]:
+            return 307
+        self.data[gid][cid]["slug"] = listname
+        return 100
