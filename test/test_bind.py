@@ -1,4 +1,5 @@
 # coding:utf-8
+import logging
 import os
 import pickle
 import sys
@@ -149,8 +150,10 @@ class TestBind1(unittest.TestCase):
         self.assertEqual(100, result)
         self.assertEqual("b", self.b.data[1][2]["slug"])
 
-    def test_(self):
-        pass
+    def test_errcode(self):
+        result = 100
+        self.assertEqual(self.b.err_returner(result),
+                         "[Info] Done successfully.")
 
     def test_(self):
         pass
@@ -163,6 +166,43 @@ class TestBind1(unittest.TestCase):
             os.remove(self.path_data)
         except Exception:
             pass
+
+
+class TestBindsLogger(unittest.TestCase):
+    def setUp(self):
+        logger = logging.getLogger("bind")
+        handler = logging.StreamHandler()
+        handler.setLevel(logging.DEBUG)
+        logger.setLevel(logging.DEBUG)
+        formatter = logging.Formatter(
+            "%(relativeCreated)6d:[%(asctime)s]"
+            "[%(name)10s][%(levelname)s]:%(message)s")
+        handler.setFormatter(formatter)
+        logger.addHandler(handler)
+
+    def test_logger(self):
+        with open("..\\.data\\key.txt", "r")as f:
+            text = f.readlines()
+            list_dict = []
+            for t in text:
+                list_dict.append(tuple(t.rstrip().split(":")))
+        ld = dict(list_dict)
+        self.path_data = "testdata.pickle"
+        self.path_err = "..\\.data\\errcode.txt"
+        d = {
+            "pd": self.path_data,
+            "pe": self.path_err,
+            "ck": ld["CK"],
+            "cs": ld["CS"],
+            "at": ld["AT"],
+            "as": ld["AS"],
+        }
+        self.d = d
+        self.b = Bind()
+        result = self.b.setter(d)
+        self.assertEqual(100, result)
+        result = self.b.read_data()
+        self.assertEqual(result, 302)
 
 
 if __name__ == "__main__":

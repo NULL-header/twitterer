@@ -1,8 +1,12 @@
 # encoding:utf-8
 import os
 import pickle
+from logging import NullHandler, getLogger
 
 from twitterer import Mytwitterer
+
+logger = getLogger(__name__)
+logger.addHandler(NullHandler())
 
 
 class Bind(object):
@@ -15,13 +19,16 @@ class Bind(object):
             with open(self.path_err, "r")as f:
                 data = f.readlines()
         except Exception:
+            logger.error("[read_data] Cannot read errcode data.")
             result = 201
             return result
         try:
             with open(self.path_data, "rb")as f:
                 self.data = pickle.load(f)
             result = 100
+            logger.info("[read_data] Done successfully.")
         except Exception:
+            logger.info("[read_data] Done without to read picklefile.")
             result = 302
         buff = []
         for i in data:
@@ -35,8 +42,10 @@ class Bind(object):
         if not d.get(gid):
             d[gid] = {}
         if d[gid].get(cid):
+            logger.info("[set_bind] The guild is not in data.")
             return 301
         d[gid][cid] = self._childer()
+        logger.info("[set_bind] Done successfully.")
         return 100
 
     def _childer(self):
@@ -48,9 +57,12 @@ class Bind(object):
 
     def check_bind(self, gid, cid):
         if not self.data.get(gid):
+            logger.info("[check_bind] The id of guild is not in data.")
             return [False, 303]
         if not self.data[gid].get(cid):
+            logger.info("[check_bind] The channel is not binded.")
             return [False, 304]
+        logger.info("[check_bind] Done successfully.")
         return [True, 100]
 
     def err_returner(self, code):
@@ -64,18 +76,22 @@ class Bind(object):
         result = 0
         try:
             os.remove(self.path_data)
+            logger.info("[clean_bind] Done successfully.")
             result = 100
         except Exception:
+            logger.info("[clean_bind] Done without to delete save-file.")
             result = 305
         self.data = {}
         return result
 
     def set_id(self, gid, cid, id):
         if not id:
+            logger.info("[set_id] The id, a argment, is nothing.")
             return 306
         if id.startswith("@"):
             id = id[1:]
         self.data[gid][cid]["id"] = id
+        logger.info("[set_id] Done successfully.")
         return 100
 
     def setter(self, d: dict):
@@ -85,10 +101,14 @@ class Bind(object):
         self.CS = d["cs"]
         self.AT = d["at"]
         self.AS = d["as"]
+        logger.info("[set_id] Done successfully.")
         return 100
 
     def set_list(self, gid, cid, listname):
         if not self.data[gid][cid]["id"]:
+            logger.info(
+                "[set_list] Nothing there is the id in the internal data.")
             return 307
         self.data[gid][cid]["slug"] = listname
+        logger.info("[set_list] Done successfully.")
         return 100
