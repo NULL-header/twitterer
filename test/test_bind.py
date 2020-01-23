@@ -35,9 +35,14 @@ class TestBind1(unittest.TestCase):
         self.d = d
         self.b = Bind()
         result = self.b.setter(d)
-        self.assertEqual(100, result)
+        self.assertEqual(self.b.path_data, d["pd"])
+        self.assertEqual(self.b.path_err, d["pe"])
+        self.assertEqual(self.b.CK, d["ck"])
+        self.assertEqual(self.b.CS, d["cs"])
+        self.assertEqual(self.b.AT, d["at"])
+        self.assertEqual(self.b.AS, d["as"])
         result = self.b.read_data()
-        self.assertEqual(result, 302)
+        self.assertEqual(self.b.data, {})
 
     def test_read_data(self):
         d_test = {
@@ -48,29 +53,16 @@ class TestBind1(unittest.TestCase):
             "at": self.d["at"],
             "as": self.d["as"],
         }
-        result = self.b.setter(d_test)
-        self.assertEqual(100, result)
-        result = self.b.read_data()
-        self.assertEqual(result, 201)
-        path_err = "testcase_read_data_err.txt"
         path_data = "testcase_read_data_data.pickle"
-        with open(path_err, "w")as f:
-            text = "0:done"
-            f.write(text)
         with open(path_data, "wb")as f:
             pickle.dump({1: None}, f)
-        d_test["pe"] = path_err
         result = self.b.setter(d_test)
-        self.assertEqual(100, result)
         result = self.b.read_data()
-        self.assertEqual(result, 302)
+        self.assertFalse(bool(self.b.data))
         d_test["pd"] = path_data
         result = self.b.setter(d_test)
-        self.assertEqual(100, result)
         result = self.b.read_data()
-        self.assertEqual(result, 100)
         self.assertTrue(bool(self.b.data))
-        os.remove(path_err)
         os.remove(path_data)
 
     def test_new(self):
@@ -91,9 +83,8 @@ class TestBind1(unittest.TestCase):
                 }
             }
         }
-        self.assertEqual(result, 100)
         self.assertEqual(self.b.data, testcase)
-        self.assertEqual(self.b.set_bind(gid, cid), 301)
+        self.assertEqual(self.b.set_bind(gid, cid), None)
 
     def test_check_bind(self):
         gid = 111
@@ -149,11 +140,6 @@ class TestBind1(unittest.TestCase):
         result = self.b.set_list(1, 2, "b")
         self.assertEqual(100, result)
         self.assertEqual("b", self.b.data[1][2]["slug"])
-
-    def test_errcode(self):
-        result = 100
-        self.assertEqual(self.b.err_returner(result),
-                         "[Info] Done successfully.")
 
     def test_(self):
         pass

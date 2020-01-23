@@ -16,13 +16,6 @@ class Bind(object):
     def read_data(self):
         result = 0
         try:
-            with open(self.path_err, "r")as f:
-                data = f.readlines()
-        except Exception:
-            logger.error("[read_data] Cannot read errcode data.")
-            result = 201
-            return result
-        try:
             with open(self.path_data, "rb")as f:
                 self.data = pickle.load(f)
             result = 100
@@ -30,11 +23,6 @@ class Bind(object):
         except Exception:
             logger.info("[read_data] Done without to read picklefile.")
             result = 302
-        buff = []
-        for i in data:
-            bu = i.rstrip().split(":")
-            buff.append(tuple([int(bu[0]), bu[1]]))
-        self.err = dict(buff)
         return result
 
     def set_bind(self, gid, cid):
@@ -43,7 +31,7 @@ class Bind(object):
             d[gid] = {}
         if d[gid].get(cid):
             logger.info("[set_bind] The guild is not in data.")
-            return 301
+            return None
         d[gid][cid] = self._childer()
         logger.info("[set_bind] Done successfully.")
         return 100
@@ -64,9 +52,6 @@ class Bind(object):
             return [False, 304]
         logger.info("[check_bind] Done successfully.")
         return [True, 100]
-
-    def err_returner(self, code):
-        return self.err[code]
 
     def _dumper(self):
         with open(self.path_data, "wb")as f:
