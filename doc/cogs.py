@@ -10,8 +10,8 @@ from discord.ext import commands
 from twitterer import Mytwitterer
 
 logger = getLogger("bot").getChild(__name__)
-path_bind = "..\\.data\\bind.pickle"
-path_err = "..\\.data\\errcode.txt"
+path_bind = ".data\\bind.pickle"
+path_err = ".data\\errcode.txt"
 emoji = "\U0001F9E1"
 
 bind_disp = \
@@ -60,14 +60,13 @@ class Cmds(commands.Cog):
         self.bind = Bind()
         data_dict = {
             "pd": path_bind,
-            "pe": path_err,
             "ck": self.bot.dict_keys["CK"],
             "cs": self.bot.dict_keys["CS"],
             "at": self.bot.dict_keys["AT"],
             "as": self.bot.dict_keys["AS"],
         }
-        result = self.bind.setter(data_dict)
-        result = self.bind.read_data()
+        self.bind.setter(data_dict)
+        self.bind.read_data()
 
     @staticmethod
     def childer(*, id: str = None, slug: str = None,

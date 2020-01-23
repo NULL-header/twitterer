@@ -1,11 +1,8 @@
 # encoding:utf-8
-import asyncio
-import os
 import subprocess
 import sys
 from logging import NullHandler, getLogger
 
-import discord
 from discord.ext import commands
 
 logger = getLogger("bot")

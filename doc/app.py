@@ -1,12 +1,10 @@
 # encoding:utf-8
-import os
-import subprocess
 import sys
 from logging import DEBUG, FileHandler, Formatter, StreamHandler, getLogger
 
 logger = getLogger("main")
 handler = StreamHandler()
-fhandler = FileHandler(filename="..\\.data\\app.log",
+fhandler = FileHandler(filename=".data\\app.log",
                        encoding="utf-8", mode="w")
 handler.setLevel(DEBUG)
 formatter = Formatter(
@@ -17,7 +15,7 @@ logger.setLevel(DEBUG)
 logger.addHandler(handler)
 dlogger = getLogger("discord")
 dlogger.setLevel(DEBUG)
-dhandler = FileHandler(filename="..\\.data\\discord.log",
+dhandler = FileHandler(filename=".data\\discord.log",
                        encoding="utf-8", mode="w")
 dhandler.setLevel(DEBUG)
 dhandler.setFormatter(formatter)
@@ -25,7 +23,7 @@ dlogger.addHandler(dhandler)
 blogger = getLogger("bot")
 blogger.setLevel(DEBUG)
 blogger.addHandler(handler)
-bhandler = FileHandler(filename="..\\.data\\bot.log",
+bhandler = FileHandler(filename=".data\\bot.log",
                        encoding="utf-8", mode="w")
 blogger.addHandler(bhandler)
 
@@ -62,7 +60,7 @@ def main():
         prfix = args[1]
     try:
         from bot import Bot
-        bot = Bot(read_keys("..\\.data\\key.txt"), prfix=prfix)
+        bot = Bot(read_keys(".data\\key.txt"), prfix=prfix)
         logger.debug("bot run.")
         bot.wake()
     except Exception:
