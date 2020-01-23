@@ -46,17 +46,6 @@ class Cmds(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.botcmds()
-        if os.path.exists(path_bind):
-            with open(path_bind, "rb")as f:
-                self.bind_channel = pickle.load(f)
-            logger.debug("could read bind.pickle.")
-        else:
-            self.bind_channel = {}
-            logger.debug("could not read bind.pickle.")
-
-    def __init__(self, bot):
-        self.bot = bot
-        self.botcmds()
         self.bind = Bind()
         data_dict = {
             "pd": path_bind,
@@ -67,15 +56,6 @@ class Cmds(commands.Cog):
         }
         self.bind.setter(data_dict)
         self.bind.read_data()
-
-    @staticmethod
-    def childer(*, id: str = None, slug: str = None,
-                twitterer: str = None) -> dict:
-        return {
-            "id": id,
-            "slug": slug,
-            "twitterer": twitterer,
-        }
 
     def dumper(self, path: str, arg: dict):
         with open(path, "wb")as f:
