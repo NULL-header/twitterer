@@ -1,0 +1,11 @@
+__pycache__
+/branches/
+/hooks/
+/info/
+/objects/
+/refs/
+/config
+/description
+/HEAD
+/.data/*
+!/.data/empty
