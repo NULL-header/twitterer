@@ -36,11 +36,16 @@ options_to_short=(
 #property of methods short name
 options_nonarg=( 'h' )
 
+#common process in options
 pros(){
+    #help
     func_h(){
-        echo "check"
+        echo "Usage:"
+        echo "    -h   --help          option -> show usage"
+        echo "    -p   --python-path   option -> set path of python"
         exit 1
     }
+    #python-path
     func_p(){
         if [ -n "$1" ]; then
             args['add_path']="$1"
@@ -48,39 +53,29 @@ pros(){
             endprocess "-p or --python-path option need a argment."
         fi
     }
-
+    #replaced long option to short
     op="$1"
     for option in "${!options_to_short[@]}"; do
         if [ "$1" == "$option" ]; then
             op=${options_to_short[$option]}
         fi
     done
-    echo "option:$op"
-    echo "arg:$2"
-    #$op 2> /dev/null || echo "error"
+    #method calling
     if [ -z "$2" ]; then
-        "func_$op" || {
-            echo "error"
-            exit 1
-        }
+        "func_$op" 2> /dev/null || endprocess "A error occured in a calling of no-argumential option."
     else
-        "func_$op" "$2" || {
-            echo "error"
-            exit 1
-        }
+        "func_$op" "$2" 2> /dev/null || endprocess "A error occured in a calling of argumntial option."
     fi
 }
-
+#option checking
 while (( $# > 0 )); do
     array_options=()
     non_need_arg=''
     case "$1" in
         --*)
-            echo "long"
             hyphen='--'
             ;;
         -*)
-            echo "short"
             hyphen='-'
             for option in "${options_nonarg[@]}"; do
                 if [[ $1 =~ $option ]]; then
@@ -90,7 +85,7 @@ while (( $# > 0 )); do
             done
             ;;
         *)
-            echo 'need -o or --option.'
+            endprocess 'run.sh needs such as -e or --example.'
             hyphen=''
             ;;
     esac
@@ -107,14 +102,12 @@ while (( $# > 0 )); do
     shift
 done
 
+#-p option
 add_path(){
-    echo "path"
-    echo "$1"
-    if [ -e "$1" ] && [[ $($1 --version) =~ Python.+ ]]; then
+    if [ -e "$1" ] && [[ $($1 --version 2> /dev/null) =~ Python.+ ]]; then
         path_py="$1"
-        echo path_py
     else
-        echo "not python"
+        endprocess "Python is not forward on the path."
     fi
 }
 
@@ -129,9 +122,7 @@ done
     if [[ ! $ver_py =~ $assign_ver ]]; then
         endprocess "A version of python is ${ver_py#Python } and not ${ver}.\nPlease install Python of ${ver}."
     fi
-} || {
-    endprocess "Python is not installed."
-}
+} || endprocess "Python is not installed or seted path."
 
 if [ ! -e $path_venv ]; then
     $path_py -m venv "$path_venv"
@@ -141,4 +132,4 @@ source $path_venv/bin/activate || endprocess "A error occured in probrem such as
 
 $path_py $path_src
 
-endprocess ''
+endprocess "done Successfully."
