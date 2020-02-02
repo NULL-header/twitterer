@@ -21,9 +21,7 @@ path_py='python'
 
 endprocess(){
     echo -e "$1"
-    popd > /dev/null || {
-        echo "Error is occured in end process."
-    }
+    popd > /dev/null || echo "Error is occured in end process."
     exit 1
 }
 
