@@ -11,6 +11,7 @@ ver='3.8'
 assign_ver="Python ${ver}.*"
 path_venv=".data/.venv"
 path_src="src/HelloVenv.py"
+path_req="./requirements.txt"
 
 #initialize
 declare -A args
@@ -128,6 +129,18 @@ fi
 
 source $path_venv/bin/activate || endprocess "A error occured in probrem such as venv."
 
-$path_py $path_src
+if [ -e $path_req ]; then
+    md5=$(md5sum ${path_req} | cut -f 1 -d ' ')
+    if [ ! -e ".data/md5_${md5}" ]; then
+        python -m pip install -U pip
+        python -m pip freeze | xargs python -m pip uninstall -y 2>/dev/null
+        python -m pip install -r $path_req
+        rm -rf .data/md5_*
+        : > ".data/md5_${md5}"
+    fi
+else
+    endprocess "run.sh needs ${path_req}."
+fi
+python $path_src
 
 endprocess "done Successfully."
