@@ -1,5 +1,16 @@
 #!/bin/bash
 
+#if you want to add some options, there are two way.
+#they are adding as a option which needs argument and adding as a opiton which needs nothing.
+#In any case, first, you should decide a word in alphabets.
+#After, define a function as func_(alphabet) in pros function.
+#if it need no items, write some method in func_(alphabet) function. It is good to factor out method into out function.
+#if it need a argument, write some logic in out function and specify function name as key and argument as value to args associative array in fanc_(alphabet) funciton.
+#It finished for adding.
+#Next, they are options.
+#It can to make the long option and the alphabet correnspond from specifying the long option as key and the alphabet as value to option_to_short associative array.
+#If the option needs nothing, it can to analyze at the same time on one option from define some alphabet in option_nonarg array.
+
 pushd "$(dirname "${0}")" >/dev/null || {
     echo "Can not move the work directory."
     exit 1
@@ -7,13 +18,14 @@ pushd "$(dirname "${0}")" >/dev/null || {
 
 
 #property of env
+#user can rewrite some option to change action of run.sh
+#example -> ver='3.7'
 ver='3.8'
 assign_ver="Python ${ver}.*"
 path_venv=".data/.venv"
 path_src="src/HelloVenv.py"
 path_req="./requirements.txt"
 
-#initialize
 declare -A args
 declare -A options_to_short
 declare -a options_nonarg
@@ -26,14 +38,16 @@ endprocess(){
     exit 1
 }
 
-#property of methods long name
+#property of methods long name to replace to short name
 options_to_short=(
     ['python-path']='p'
     ['help']='h'
+    ['exist-venv']='v'
 )
 
 #property of methods short name
-options_nonarg=( 'h' )
+#if some word add into this, user can set option at the same time, for example -ha
+options_nonarg=( 'h' 'v' )
 
 #common process in options
 pros(){
@@ -51,6 +65,9 @@ pros(){
         else
             endprocess "-p or --python-path option need a argment."
         fi
+    }
+    func_v(){
+        args['add_path']='.data/.venv/bin/python'
     }
     #replaced long option to short
     op="$1"
@@ -101,7 +118,7 @@ while (( $# > 0 )); do
     shift
 done
 
-#-p option
+#add path for option
 add_path(){
     if [ -e "$1" ] && [[ $($1 --version 2> /dev/null) =~ Python.+ ]]; then
         path_py="$1"
