@@ -5,11 +5,14 @@
 #In any case, first, you should decide a word in alphabets.
 #After, define a function as func_(alphabet) in pros function.
 #if it need no items, write some method in func_(alphabet) function. It is good to factor out method into out function.
-#if it need a argument, write some logic in out function and specify function name as key and argument as value to args associative array in fanc_(alphabet) funciton.
+#if it need a argument, write some logic in out function and specify function name as key and argument as value to args
+# associative array in fanc_(alphabet) funciton.
 #It finished for adding.
 #Next, they are options.
-#It can to make the long option and the alphabet correnspond from specifying the long option as key and the alphabet as value to option_to_short associative array.
-#If the option needs nothing, it can to analyze at the same time on one option from define some alphabet in option_nonarg array.
+#It can to make the long option and the alphabet correnspond from specifying the long option as key and the alphabet as
+# value to option_to_short associative array.
+#If the option needs nothing, it can to analyze at the same time on one option from define some alphabet in
+# option_nonarg array.
 
 pushd "$(dirname "${0}")" >/dev/null || {
     echo "Can not move the work directory."
