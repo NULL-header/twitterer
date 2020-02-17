@@ -27,7 +27,7 @@ blogger.addHandler(handler)
 bhandler = FileHandler(filename=".data/bot.log",
                        encoding="utf-8", mode="w")
 blogger.addHandler(bhandler)
-bindlogger = getLogger("bind")
+bindlogger = getLogger("core")
 bindlogger.setLevel(DEBUG)
 bindlogger.addHandler(handler)
 
