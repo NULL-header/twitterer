@@ -9,3 +9,4 @@ __pycache__
 /HEAD
 /.data/*
 !/.data/empty
+/src/.env

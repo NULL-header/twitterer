@@ -26,7 +26,7 @@ pushd "$(dirname "${0}")" >/dev/null || {
 ver='3.8'
 assign_ver="Python ${ver}.*"
 path_venv=".data/.venv"
-path_src="src/HelloVenv.py"
+path_src="src/app.py"
 path_req="./requirements.txt"
 
 declare -A args
