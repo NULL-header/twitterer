@@ -2,6 +2,7 @@ import unittest
 import os
 import pickle
 from src.func import Core
+from src import setting
 from logging import getLogger, StreamHandler, DEBUG, Formatter
 
 
@@ -9,6 +10,7 @@ class TestCore(unittest.TestCase):
     def setUp(self):
         self.path = "testsavedata.txt"
         self.c = Core()
+
         self.c.setter(path=self.path)
 
     def test_init(self):
@@ -75,6 +77,13 @@ class TestCore(unittest.TestCase):
         self.assertTrue(flag)
         flag = flag = self.c.clean()
         self.assertFalse(flag)
+
+    def test_set_id(self):
+        flag = self.c.set_id(100, "aaa")
+        self.assertFalse(flag)
+        self.c.bind(100)
+        flag = self.c.set_id(100, "aaa")
+        self.assertTrue(flag)
 
     def test_(self):
         pass

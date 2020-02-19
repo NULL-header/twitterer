@@ -45,9 +45,17 @@ class Core(object):
             return True
         return False
 
+    def setter(self, *, path):
+        self.__savepath = path
+
+    def set_id(self, channel, id):
+        data = self.__binded_channel.get(100)
+        if data:
+            data["id"] = id
+            logger.debug("id seted {0}".format(id))
+            return True
+        return False
+
     @property
     def binded_channel(self):
         return self.__binded_channel
-
-    def setter(self, *, path):
-        self.__savepath = path

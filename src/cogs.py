@@ -83,6 +83,13 @@ class Cmds(commands.Cog):
         else:
             await ctx.send("Please put a prefix.")
 
+    @setter.command(name="id")
+    async def set_id(self, ctx, id: str = None):
+        if id:
+            self.core.set_id(ctx.channel.id, id)
+        else:
+            await ctx.send("Please put a prefix.")
+
     @commands.Cog.listener()
     async def on_message(self, msg):
         if msg.author == self.bot.user:
