@@ -8,13 +8,16 @@ from logging import getLogger, StreamHandler, DEBUG, Formatter
 class TestCore(unittest.TestCase):
     def setUp(self):
         self.path = "testsavedata.txt"
-        self.c = Core(self.path)
+        self.c = Core()
+        self.c.setter(path=self.path)
 
     def test_init(self):
         self.assertEquals(self.c.binded_channel, {})
 
         self.setuper_init()
-        core = Core(self.testdata_init)
+        core = Core()
+        core.setter(path=self.testdata_init)
+        core.load_savedata()
         self.assertEquals(core.binded_channel, self.moc_init)
         self.setdowner_init()
 
@@ -28,6 +31,28 @@ class TestCore(unittest.TestCase):
 
     def setdowner_init(self):
         os.remove(self.testdata_init)
+
+    def test_load_savedata(self):
+        core = Core()
+        flag = core.load_savedata()
+        self.assertFalse(flag)
+
+        self.setuper_load_savedata()
+        core.setter(path=self.testdata_load_savedata)
+        flag = core.load_savedata()
+        self.assertTrue(flag)
+        self.setdowner_load_savedata()
+
+    def setuper_load_savedata(self):
+        self.testdata_load_savedata = "testdata_load_savedata.txt"
+        self.moc_load_savedata = {
+            222: None
+        }
+        with open(self.testdata_load_savedata, "wb")as f:
+            pickle.dump(self.moc_load_savedata, f)
+
+    def setdowner_load_savedata(self):
+        os.remove(self.testdata_load_savedata)
 
     def test_bind(self):
         flag = self.c.bind(100)
@@ -47,11 +72,9 @@ class TestCore(unittest.TestCase):
         self.c.bind(100)
         flag = self.c.clean()
         self.assertEquals(self.c.binded_channel, {})
-        self.assertEquals(flag, True)
-
-    def test_setpath(self):
-        self.c.setpath()
-        self.assertTrue(True)
+        self.assertTrue(flag)
+        flag = flag = self.c.clean()
+        self.assertFalse(flag)
 
     def test_(self):
         pass

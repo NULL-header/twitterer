@@ -7,16 +7,20 @@ logger.addHandler(NullHandler())
 
 
 class Core(object):
-    def __init__(self, path):
+    def __init__(self):
         self.__binded_channel = {}
-        self.__savepath = path
-        if os.path.exists(path):
+        self.__savepath = ""
+
+    def load_savedata(self):
+        if os.path.exists(self.__savepath):
             try:
-                with open(path, "rb")as f:
+                with open(self.__savepath, "rb")as f:
                     self.__binded_channel = pickle.load(f)
                     logger.debug("load data {0}".format(self.__binded_channel))
+                    return True
             except Exception:
-                logger.debug("can not load data")
+                logger.debug("data do not exist.")
+        return False
 
     def bind(self, channel_id):
         if self.__binded_channel.get(channel_id):
@@ -36,14 +40,14 @@ class Core(object):
 
     def clean(self):
         self.__binded_channel = {}
-        return True
-
-    def setpath(self):
-        pass
+        if os.path.exists(self.__savepath):
+            os.remove(self.__savepath)
+            return True
+        return False
 
     @property
     def binded_channel(self):
         return self.__binded_channel
 
-    def load_data(self):
-        pass
+    def setter(self, *, path):
+        self.__savepath = path

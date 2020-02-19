@@ -4,7 +4,7 @@ from func import Core
 import subprocess
 logger = getLogger("bot").getChild(__name__)
 emoji = "\U0001F9E1"
-
+path_save = ".data/savedata.txt"
 bind_disp = \
     "-----command list-----\n"\
     "set:\n"\
@@ -37,6 +37,8 @@ class Cmds(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.core = Core()
+        self.core.setter(path=path_save)
+        self.core.load_savedata()
 
     @commands.command()
     async def test(self, ctx):
