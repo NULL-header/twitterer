@@ -1,6 +1,7 @@
 from logging import getLogger, NullHandler
 import pickle
 import os
+from src.datasome import DataofCore
 
 logger = getLogger("core")
 logger.addHandler(NullHandler())
@@ -9,12 +10,18 @@ logger.addHandler(NullHandler())
 class Core(object):
     def __init__(self):
         self.__binded_channel = {}
-        self.__savepath = ""
+        self.data = {
+            "path": "",
+            "CK": None,
+            "CS": None,
+            "AT": None,
+            "AS": None,
+        }
 
     def load_savedata(self):
-        if os.path.exists(self.__savepath):
+        if os.path.exists(self.data["path"]):
             try:
-                with open(self.__savepath, "rb")as f:
+                with open(self.data["path"], "rb")as f:
                     self.__binded_channel = pickle.load(f)
                     logger.debug("load data {0}".format(self.__binded_channel))
                     return True
@@ -30,7 +37,7 @@ class Core(object):
             "slug": None,
             "twitterer": None,
         }
-        with open(self.__savepath, "wb")as f:
+        with open(self.data["path"], "wb")as f:
             pickle.dump(self.__binded_channel, f)
         logger.debug("check {0}".format(self.__binded_channel))
         return True
@@ -40,18 +47,27 @@ class Core(object):
 
     def clean(self):
         self.__binded_channel = {}
-        if os.path.exists(self.__savepath):
-            os.remove(self.__savepath)
+        if os.path.exists(self.data["path"]):
+            os.remove(self.data["path"])
             return True
         return False
 
-    def setter(self, *, path):
-        self.__savepath = path
+    def setter(self, *, path=None, Ck=None, Cs=None, At=None, As=None):
+        datadict = {
+            path: "path",
+            Ck: "CK",
+            Cs: "CS",
+            At: "AT",
+            As: "AS",
+        }
+        for i in datadict.keys():
+            if i:
+                self.data[datadict[i]] = i
 
     def set_id(self, channel, id):
-        data = self.__binded_channel.get(100)
-        if data:
-            data["id"] = id
+        bindeddata = self.__binded_channel.get(100)
+        if bindeddata:
+            bindeddata["id"] = id
             logger.debug("id seted {0}".format(id))
             return True
         return False

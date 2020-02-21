@@ -10,8 +10,14 @@ class TestCore(unittest.TestCase):
     def setUp(self):
         self.path = "testsavedata.txt"
         self.c = Core()
-
-        self.c.setter(path=self.path)
+        self.batch = {
+            "path": self.path,
+            "Ck": setting.CONSUMER_KEY,
+            "Cs": setting.CONSUMER_SERCRET,
+            "At": setting.ACCESS_TOKEN,
+            "As": setting.ACCESS_TOKEN_SERCRET,
+        }
+        self.c.setter(**self.batch)
 
     def test_init(self):
         self.assertEquals(self.c.binded_channel, {})
@@ -105,3 +111,7 @@ class loggercheck(TestCore):
         logger.setLevel(DEBUG)
         logger.addHandler(handler)
         super().setUp()
+
+
+if __name__ == "__main__":
+    unittest.main()

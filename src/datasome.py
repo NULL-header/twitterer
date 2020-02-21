@@ -1,0 +1,2 @@
+class DataofCore(object):
+    pass
