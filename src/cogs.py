@@ -84,9 +84,9 @@ class Cmds(commands.Cog):
             await ctx.send("Please put a prefix.")
 
     @setter.command(name="id")
-    async def set_id(self, ctx, id: str = None):
-        if id:
-            self.core.set_id(ctx.channel.id, id)
+    async def set_id(self, ctx, id_: str = None):
+        if id_:
+            self.core.set_id(ctx.channel.id, id_)
         else:
             await ctx.send("Please put a prefix.")
 

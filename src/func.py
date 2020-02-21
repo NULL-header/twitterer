@@ -32,11 +32,7 @@ class Core(object):
     def bind(self, channel_id):
         if self.__binded_channel.get(channel_id):
             return False
-        self.__binded_channel[channel_id] = {
-            "id": None,
-            "slug": None,
-            "twitterer": None,
-        }
+        self.__binded_channel[channel_id] = DataofCore()
         with open(self.data["path"], "wb")as f:
             pickle.dump(self.__binded_channel, f)
         logger.debug("check {0}".format(self.__binded_channel))
@@ -64,10 +60,10 @@ class Core(object):
             if i:
                 self.data[datadict[i]] = i
 
-    def set_id(self, channel, id):
-        bindeddata = self.__binded_channel.get(100)
+    def set_id(self, channel, id_):
+        bindeddata = self.__binded_channel.get(channel)
         if bindeddata:
-            bindeddata["id"] = id
+            bindeddata.twid = id_
             logger.debug("id seted {0}".format(id))
             return True
         return False
