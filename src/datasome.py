@@ -1,8 +1,24 @@
+from os import path as ospath
+from sys import path as syspath
+
+try:
+    # These lines are for unittest.
+    syspath.append(ospath.join(ospath.dirname(__file__), '..'))
+    from src.twitter import MyTwitter
+except Exception:
+    pass
+
+
 class DataofCore(object):
-    def __init__(self):
+    def __init__(self, *, Ck=None, Cs=None, At=None, As=None):
         self.__id = None
         self.__slug = None
         self.__twitter = None
+        if Ck and Cs and At and As:
+            try:
+                self.__twitter = MyTwitter(Ck, Cs, At, As)
+            except Exception:
+                pass
 
     @property
     def twid(self):
