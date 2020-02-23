@@ -19,6 +19,7 @@ class Bot(commands.Bot):
         super().__init__(prfix)
         self.prfix = prfix
         self.dict_keys = dict_keys
+        self.flag = False
         for cog in EXTENSIONS:
             try:
                 self.load_extension(cog)
@@ -27,6 +28,7 @@ class Bot(commands.Bot):
                 logger.warning("cog could not road;\n\n"
                                "with this trackback:{0}\n"
                                .format(sys.exc_info()))
+                self.flag = True
 
     async def on_ready(self):
         logger.debug("---Loged in as {0.name}({0.id})---".format(self.user))
@@ -37,6 +39,8 @@ class Bot(commands.Bot):
             await self.logout()
         else:
             logger.debug("prefix is {}".format(self.prfix))
+        if self.flag:
+            await self.logout()
 
     async def on_message(self, msg):
         pass

@@ -4,21 +4,24 @@ from sys import path as syspath
 try:
     # These lines are for unittest.
     syspath.append(ospath.join(ospath.dirname(__file__), '..'))
-    from src.twitter import MyTwitter
+    from src.twitter import Mytwitter
 except Exception:
     pass
 
 
 class DataofCore(object):
-    def __init__(self, *, Ck=None, Cs=None, At=None, As=None):
-        self.__id = None
+    def __init__(self, Ck=None, Cs=None, At=None, As=None):
+        self.__twid = None
         self.__slug = None
         self.__twitter = None
+        self.__tweets = None
         if Ck and Cs and At and As:
-            try:
-                self.__twitter = MyTwitter(Ck, Cs, At, As)
-            except Exception:
-                pass
+            self.__twitter = Mytwitter(Ck, Cs, At, As)
+
+    def listlist(self):
+        if not self.twid:
+            return False
+        return self.__twitter.search_list(self.twid)
 
     @property
     def twid(self):
@@ -43,3 +46,11 @@ class DataofCore(object):
     @twitter.setter
     def twitter(self, item):
         self.__twitter = item
+
+    @property
+    def tweets(self):
+        return self.__tweets
+
+    @tweets.setter
+    def tweets(self, item):
+        self.__tweets = item

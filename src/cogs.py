@@ -2,6 +2,7 @@ from logging import getLogger
 from discord.ext import commands
 from func import Core
 import subprocess
+import asyncio
 logger = getLogger("bot").getChild(__name__)
 emoji = "\U0001F9E1"
 path_save = ".data/savedata.txt"
@@ -36,8 +37,16 @@ set_disp =\
 class Cmds(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.is_stocker_run = False
         self.core = Core()
-        self.core.setter(path=path_save)
+        items = {
+            "path": path_save,
+            "Ck": self.bot.dict_keys["CONSUMER_KEY"],
+            "Cs": self.bot.dict_keys["CONSUMER_SERCRET"],
+            "At": self.bot.dict_keys["ACCESS_TOKEN"],
+            "As": self.bot.dict_keys["ACCESS_TOKEN_SERCRET"],
+        }
+        self.core.setter(**items)
         self.core.load_savedata()
 
     @commands.command()
@@ -87,8 +96,56 @@ class Cmds(commands.Cog):
     async def set_id(self, ctx, id_: str = None):
         if id_:
             self.core.set_id(ctx.channel.id, id_)
+            await ctx.send("seted id.")
+            return
+        await ctx.send("Please put a prefix.")
+
+    @setter.command(name="list")
+    async def set_slug(self, ctx, slug=None):
+        if not self.core.binded_channel[ctx.channel.id].twid:
+            await ctx.send("Please set a id before setting the list.")
+            return
+        listlist = self.core.catch_lists(ctx.channel.id)
+        if not listlist:
+            await ctx.send("Please set a id before setting the list.")
+            return
+        if slug:
+            if not listlist:
+                await ctx.send("Lists can not be search.")
+                return
+            if slug in listlist:
+                self.core.set_list(slug)
+            else:
+                item = self.core.binded_channel[ctx.channel.id]
+                await ctx.send(("The {0} does not exist on the account which" +
+                                " has the id {1}").format(slug, item.twid))
         else:
-            await ctx.send("Please put a prefix.")
+            for i in listlist:
+                await ctx.send(i)
+            channel = ctx.channel
+
+            def check(m):
+                return m.content in listlist and m.channel == channel
+
+            msg = None
+            while not msg:
+                msg = await self.bot.wait_for("message", check=check)
+                if not msg:
+                    await ctx.send("That message is invalid.")
+            self.core.set_list(channel.id, msg.content)
+        await ctx.send("Set list.")
+
+    @commands.group(name="switch")
+    async def switch_for_loop_method(self, ctx):
+        pass
+
+    @switch_for_loop_method.command(name="start")
+    async def stocker_starter(self, ctx):
+        pass
+
+    @switch_for_loop_method.command(name="start")
+    async def stocker_stoper(self, ctx):
+        pass
 
     @commands.Cog.listener()
     async def on_message(self, msg):
@@ -99,6 +156,13 @@ class Cmds(commands.Cog):
         else:
             if self.core.checker(msg.channel.id):
                 await self.bot.process_commands(msg)
+
+    async def stocker(self):
+        if self.is_stocker_run:
+            logger.debug("stocker wake up.")
+            await asyncio.sleep(60)
+            asyncio.ensure_future(self.stocker())
+        logger.debug("stocker stopped.")
 
 
 def setup(bot):

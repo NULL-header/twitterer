@@ -90,6 +90,11 @@ class TestCore(unittest.TestCase):
         self.c.bind(100)
         flag = self.c.set_id(100, "aaa")
         self.assertTrue(flag)
+        flag = self.c.set_id(100, "@bbb")
+        self.assertTrue(flag)
+
+    def test_set_list(self):
+        self.c.set_id(100, "aaa")
 
     def test_(self):
         pass

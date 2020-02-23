@@ -26,6 +26,10 @@ class Core(object):
             "AS": None,
         }
 
+    def saver(self):
+        with open(self.data["path"], "wb")as f:
+            pickle.dump(self.__binded_channel, f)
+
     def load_savedata(self):
         # You should use this after using of self.setter function.
         if os.path.exists(self.data["path"]):
@@ -43,9 +47,14 @@ class Core(object):
         #  to internal dictionary variable object.
         if self.__binded_channel.get(channel_id):
             return False
-        self.__binded_channel[channel_id] = DataofCore()
-        with open(self.data["path"], "wb")as f:
-            pickle.dump(self.__binded_channel, f)
+        items = [
+            self.data["CK"],
+            self.data["CS"],
+            self.data["AT"],
+            self.data["AS"],
+        ]
+        self.__binded_channel[channel_id] = DataofCore(*items)
+        self.saver()
         logger.debug("check {0}".format(self.__binded_channel))
         return True
 
@@ -79,11 +88,29 @@ class Core(object):
     def set_id(self, channel, id_):
         # this function writes some data into DataofCore of data object.
         bindeddata = self.__binded_channel.get(channel)
+        if id_.startswith("@"):
+            id_ = id_[1:]
         if bindeddata:
             bindeddata.twid = id_
-            logger.debug("id seted {0}".format(id))
+            logger.debug("id seted {0}".format(id_))
+            self.saver()
             return True
         return False
+
+    def catch_lists(self, channel):
+        bindeddata = self.__binded_channel.get(channel)
+        if bindeddata:
+            flag = bindeddata.listlist()
+            if flag:
+                return flag
+        return False
+
+    def set_list(self, channel, slug):
+        bindeddata = self.__binded_channel.get(channel)
+        if bindeddata:
+            bindeddata.twid = slug
+            self.saver()
+            logger.debug("id seted {0}".format(slug))
 
     @property
     def binded_channel(self):
