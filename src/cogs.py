@@ -141,11 +141,12 @@ class Cmds(commands.Cog):
 
     @switch_for_loop_method.command(name="start")
     async def stocker_starter(self, ctx):
-        pass
+        self.is_stocker_run = True
+        asyncio.ensure_future(self.stocker(ctx.channel.id))
 
-    @switch_for_loop_method.command(name="start")
+    @switch_for_loop_method.command(name="stop")
     async def stocker_stoper(self, ctx):
-        pass
+        self.is_stocker_run = False
 
     @commands.Cog.listener()
     async def on_message(self, msg):
@@ -157,12 +158,13 @@ class Cmds(commands.Cog):
             if self.core.checker(msg.channel.id):
                 await self.bot.process_commands(msg)
 
-    async def stocker(self):
+    async def stocker(self, channel):
         if self.is_stocker_run:
             logger.debug("stocker wake up.")
-            await asyncio.sleep(60)
-            asyncio.ensure_future(self.stocker())
-        logger.debug("stocker stopped.")
+            self.core.stock_tweet(channel)
+            asyncio.ensure_future(self.stocker(channel))
+        else:
+            logger.debug("stocker stopped.")
 
 
 def setup(bot):

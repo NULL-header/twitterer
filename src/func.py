@@ -2,7 +2,7 @@ from logging import getLogger, NullHandler
 import pickle
 import os
 import sys
-
+import asyncio
 try:
     # These lines are for unittest.
     sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
@@ -25,6 +25,7 @@ class Core(object):
             "AT": None,
             "AS": None,
         }
+        self.stock = {}
 
     def saver(self):
         with open(self.data["path"], "wb")as f:
@@ -98,6 +99,7 @@ class Core(object):
         return False
 
     def catch_lists(self, channel):
+        # It can not be written test because of using Twitter API.
         bindeddata = self.__binded_channel.get(channel)
         if bindeddata:
             flag = bindeddata.listlist()
@@ -106,11 +108,28 @@ class Core(object):
         return False
 
     def set_list(self, channel, slug):
+        # TODO:delete it's redundancy with set_id function.
         bindeddata = self.__binded_channel.get(channel)
         if bindeddata:
-            bindeddata.twid = slug
+            bindeddata.slug = slug
             self.saver()
-            logger.debug("id seted {0}".format(slug))
+            logger.debug("slug seted {0}".format(slug))
+            return True
+        return False
+
+    async def stock_tweet(self, channel, pathdir=".data"):
+        # It use Twitter API, but it does not use the api if
+        #  self.stock[channel]'s length is bigger than 200; So it can be
+        #  written test when it is bigger.
+        if not self.stock.get(channel):
+            self.stock[channel] = []
+        while len(self.stock[channel]) < 200:
+            self.stock[channel].extend(
+                self.__binded_channel[channel].catch_tweet())
+            asyncio.sleep(60)
+        savetweets = []
+        for i in range(100):
+            savetweets.append(self.stock[channel].pop(0))
 
     @property
     def binded_channel(self):

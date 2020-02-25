@@ -90,11 +90,18 @@ class TestCore(unittest.TestCase):
         self.c.bind(100)
         flag = self.c.set_id(100, "aaa")
         self.assertTrue(flag)
+        self.assertEquals(self.c.binded_channel[100].twid, "aaa")
         flag = self.c.set_id(100, "@bbb")
         self.assertTrue(flag)
+        self.assertEquals(self.c.binded_channel[100].twid, "bbb")
 
     def test_set_list(self):
-        self.c.set_id(100, "aaa")
+        flag = self.c.set_list(100, "aaa")
+        self.assertFalse(flag)
+        self.c.bind(100)
+        flag = self.c.set_list(100, "aaa")
+        self.assertTrue(flag)
+        self.assertEquals(self.c.binded_channel[100].slug, "aaa")
 
     def test_(self):
         pass
@@ -105,17 +112,15 @@ class TestCore(unittest.TestCase):
 
 
 class loggercheck(TestCore):
-    def setUp(self):
-        logger = getLogger("core")
-        handler = StreamHandler()
-        handler.setLevel(DEBUG)
-        formatter = Formatter(
-            "%(relativeCreated)6d:[%(asctime)s][%(name)10s][%(levelname)s]:"
-            "%(message)s")
-        handler.setFormatter(formatter)
-        logger.setLevel(DEBUG)
-        logger.addHandler(handler)
-        super().setUp()
+    logger = getLogger("core")
+    handler = StreamHandler()
+    handler.setLevel(DEBUG)
+    formatter = Formatter(
+        "%(relativeCreated)6d:[%(asctime)s][%(name)10s][%(levelname)s]:"
+        "%(message)s")
+    handler.setFormatter(formatter)
+    logger.setLevel(DEBUG)
+    logger.addHandler(handler)
 
 
 if __name__ == "__main__":
