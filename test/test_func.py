@@ -116,8 +116,8 @@ class loggercheck(TestCore):
     handler = StreamHandler()
     handler.setLevel(DEBUG)
     formatter = Formatter(
-        "%(relativeCreated)6d:[%(asctime)s][%(name)10s][%(levelname)s]:"
-        "%(message)s")
+        "\n%(relativeCreated)6d:[%(asctime)s][%(name)10s][%(levelname)s]:"
+        "%(message)s\n")
     handler.setFormatter(formatter)
     logger.setLevel(DEBUG)
     logger.addHandler(handler)
