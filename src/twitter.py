@@ -6,9 +6,14 @@ logger.addHandler(NullHandler())
 
 
 class Mytwitter(object):
-    counter = 0
+    counter = 1
+    api = None
+    # counter=0
+    # this value stop using twitter api.
+    # If you run this app, change value to 0.
 
     def __init__(self, Ck=None, Cs=None, At=None, As=None):
+        self.__switch = "OFFED"
         if not (Mytwitter.counter):
             self.__CK = Ck
             self.__CS = Cs
@@ -17,19 +22,22 @@ class Mytwitter(object):
             self.get_oauth()
         Mytwitter.counter += 1
 
-    def get_oauth(self):
-        auth = tweepy.OAuthHandler(self.__CK, self.__CS)
-        auth.set_access_token(self.__AT, self.__AS)
-        self.__api = tweepy.API(auth)
+    def __repr__(self):
+        return f"{Mytwitter.counter}th twitter-{self.__switch}"
 
-    @property
-    def api(self):
-        return self.__api
+    def get_oauth(self):
+        try:
+            auth = tweepy.OAuthHandler(self.__CK, self.__CS)
+            auth.set_access_token(self.__AT, self.__AS)
+            Mytwitter.api = tweepy.API(auth)
+            self.__switch = "AUTHED"
+        except Exception:
+            self.__switch = "DISAUTHED"
 
     def search_list(self, id_: str) -> list:
         try:
             listlist = []
-            for i in self.api.lists_all(id_):
+            for i in Mytwitter.api.lists_all(id_):
                 listlist.append(i.name)
             return listlist
         except Exception:

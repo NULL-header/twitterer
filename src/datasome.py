@@ -18,6 +18,10 @@ class DataofCore(object):
         if Ck and Cs and At and As:
             self.__twitter = Mytwitter(Ck, Cs, At, As)
 
+    def __repr__(self):
+        return ("DataofCore{{twid:{0} slug:{1} twitter:{2}}}"
+                ).format(self.twid, self.slug, self.twitter)
+
     def listlist(self):
         if not self.twid:
             return False

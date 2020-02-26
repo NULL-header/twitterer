@@ -40,7 +40,7 @@ class Core(object):
                     logger.debug("load data {0}".format(self.__binded_channel))
                     return True
             except Exception:
-                logger.debug("data do not exist.")
+                logger.debug("[load_savedata]data do not exist.")
         return False
 
     def bind(self, channel_id):
@@ -56,7 +56,7 @@ class Core(object):
         ]
         self.__binded_channel[channel_id] = DataofCore(*items)
         self.saver()
-        logger.debug("check {0}".format(self.__binded_channel))
+        logger.debug("[bind]check {0}".format(self.__binded_channel))
         return True
 
     def checker(self, id):
@@ -69,7 +69,9 @@ class Core(object):
         self.__binded_channel = {}
         if os.path.exists(self.data["path"]):
             os.remove(self.data["path"])
+            logger.debug("[clean]done Successfully.")
             return True
+            logger.debug("[clean]done without deleting savedata file.")
         return False
 
     def setter(self, *, path=None, Ck=None, Cs=None, At=None, As=None):
@@ -93,7 +95,7 @@ class Core(object):
             id_ = id_[1:]
         if bindeddata:
             bindeddata.twid = id_
-            logger.debug("id seted {0}".format(id_))
+            logger.debug("[set_id]id seted {0}".format(id_))
             self.saver()
             return True
         return False
@@ -113,7 +115,7 @@ class Core(object):
         if bindeddata:
             bindeddata.slug = slug
             self.saver()
-            logger.debug("slug seted {0}".format(slug))
+            logger.debug("[set_list]slug seted {0}".format(slug))
             return True
         return False
 
@@ -124,6 +126,7 @@ class Core(object):
         if not self.stock.get(channel):
             self.stock[channel] = []
         while len(self.stock[channel]) < 200:
+            logger.debug("Adding tweets into stock.")
             self.stock[channel].extend(
                 self.__binded_channel[channel].catch_tweet())
             asyncio.sleep(60)
