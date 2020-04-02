@@ -30,6 +30,9 @@ blogger.addHandler(bhandler)
 bindlogger = getLogger("core")
 bindlogger.setLevel(DEBUG)
 bindlogger.addHandler(handler)
+twilogger = getLogger("twitter")
+twilogger.setLevel(DEBUG)
+twilogger.addHandler(handler)
 
 
 logger.debug("set up.")

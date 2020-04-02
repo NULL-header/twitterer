@@ -6,7 +6,7 @@ logger.addHandler(NullHandler())
 
 
 class Mytwitter(object):
-    counter = 1
+    counter = 0
     api = None
     # counter=0
     # this value stop using twitter api.

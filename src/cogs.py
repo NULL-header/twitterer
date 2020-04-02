@@ -107,31 +107,31 @@ class Cmds(commands.Cog):
             return
         listlist = self.core.catch_lists(ctx.channel.id)
         if not listlist:
-            await ctx.send("Please set a id before setting the list.")
+            await ctx.send("Lists can not be search.")
             return
         if slug:
-            if not listlist:
-                await ctx.send("Lists can not be search.")
-                return
             if slug in listlist:
                 self.core.set_list(slug)
             else:
                 item = self.core.binded_channel[ctx.channel.id]
-                await ctx.send(("The {0} does not exist on the account which" +
-                                " has the id {1}").format(slug, item.twid))
+                await ctx.send(f"The {slug} does not exist on the account" +
+                               f" which has the id {item.twid}")
         else:
+            await ctx.send("Select from under lists.")
             for i in listlist:
                 await ctx.send(i)
             channel = ctx.channel
 
             def check(m):
-                return m.content in listlist and m.channel == channel
+                return m.channel == channel
 
             msg = None
-            while not msg:
+            while msg not in listlist:
                 msg = await self.bot.wait_for("message", check=check)
-                if not msg:
-                    await ctx.send("That message is invalid.")
+                if msg == "cancel":
+                    await ctx.send("This process is canceled")
+                    return
+                await ctx.send("This msg is invaild.")
             self.core.set_list(channel.id, msg.content)
         await ctx.send("Set list.")
 

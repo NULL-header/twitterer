@@ -28,18 +28,18 @@ class Bot(commands.Bot):
                 logger.warning("cog could not road;\n\n"
                                "with this trackback:{0}\n"
                                .format(sys.exc_info()))
-                self.flag = True
+                self.isFailedCogs = True
 
     async def on_ready(self):
         logger.debug("---Loged in as {0.name}({0.id})---".format(self.user))
-        if(self.prfix == "!DEFAULT!"):
+        if self.prfix == "!DEFAULT!":
             logger.debug("restart up app.")
             cmd = "python src/app.py !{}!".format(self.user.name)
             subprocess.Popen(cmd.split())
             await self.logout()
         else:
             logger.debug("prefix is {}".format(self.prfix))
-        if self.flag:
+        if self.isFailedCogs:
             await self.logout()
 
     async def on_message(self, msg):
