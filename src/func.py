@@ -128,11 +128,13 @@ class Core(object):
         while len(self.stock[channel]) < 200:
             logger.debug("Adding tweets into stock.")
             self.stock[channel].extend(
-                self.__binded_channel[channel].catch_tweet())
-            asyncio.sleep(60)
+                ["mock item1", "mock item2", "mock item3"])
+            # await asyncio.sleep(1)
         savetweets = []
-        for i in range(100):
+        while len(self.stock[channel]) > 0:
             savetweets.append(self.stock[channel].pop(0))
+        self.stock[channel] = []
+        print(savetweets)
 
     @property
     def binded_channel(self):

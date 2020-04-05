@@ -19,7 +19,7 @@ class Bot(commands.Bot):
         super().__init__(prfix)
         self.prfix = prfix
         self.dict_keys = dict_keys
-        self.flag = False
+        self.isFailedCogs = False
         for cog in EXTENSIONS:
             try:
                 self.load_extension(cog)

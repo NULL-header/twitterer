@@ -161,7 +161,7 @@ class Cmds(commands.Cog):
     async def stocker(self, channel):
         if self.is_stocker_run:
             logger.debug("stocker wake up.")
-            self.core.stock_tweet(channel)
+            await self.core.stock_tweet(channel)
             asyncio.ensure_future(self.stocker(channel))
         else:
             logger.debug("stocker stopped.")
