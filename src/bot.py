@@ -15,7 +15,7 @@ EXTENSIONS = [
 
 class Bot(commands.Bot):
     def __init__(self, dict_keys: dict, *, prfix: str = "!DEFAULT!"):
-        logger.debug("class Bot setting prfix to {0} on init.".format(prfix))
+        logger.debug(f"class Bot setting prfix to {prfix} on init.")
         super().__init__(prfix)
         self.prfix = prfix
         self.dict_keys = dict_keys
@@ -25,20 +25,21 @@ class Bot(commands.Bot):
                 self.load_extension(cog)
                 logger.debug("{0} could road.".format(cog))
             except Exception:
-                logger.warning("cog could not road;\n\n"
-                               "with this trackback:{0}\n"
-                               .format(sys.exc_info()))
+                stringerror = sys.exc_info()
+                logger.warning("cog could not road;\n\n" +
+                               f"with this trackback:{stringerror}\n")
                 self.isFailedCogs = True
 
     async def on_ready(self):
-        logger.debug("---Loged in as {0.name}({0.id})---".format(self.user))
+        user_myself = self.user
+        logger.debug(f"---Loged in as {user_myself.name}({user_myself.id})---")
         if self.prfix == "!DEFAULT!":
             logger.debug("restart up app.")
-            cmd = "python src/app.py !{}!".format(self.user.name)
+            cmd = f"python src/app.py !{self.user.name}!"
             subprocess.Popen(cmd.split())
             await self.logout()
         else:
-            logger.debug("prefix is {}".format(self.prfix))
+            logger.debug(f"prefix is {self.prfix}")
         if self.isFailedCogs:
             await self.logout()
 

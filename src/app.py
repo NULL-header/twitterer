@@ -55,7 +55,7 @@ def main():
         logger.debug("args have no items.")
         prfix = "!DEFAULT!"
     else:
-        logger.debug("args have items, {}.".format(args[1]))
+        logger.debug(f"args have items, {args[1]}.")
         prfix = args[1]
     try:
         from bot import Bot
@@ -63,8 +63,9 @@ def main():
         logger.debug("bot run.")
         bot.wake()
     except Exception:
-        logger.error("could not read token;\n\n"
-                     "with this traceback:{0}\n".format(sys.exc_info()))
+        stringerror = sys.exc_info()
+        logger.error("could not read token;\n\n" +
+                     f"with this traceback:{stringerror}\n")
 
 
 if __name__ == "__main__":

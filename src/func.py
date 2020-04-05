@@ -37,7 +37,7 @@ class Core(object):
             try:
                 with open(self.data["path"], "rb")as f:
                     self.__binded_channel = pickle.load(f)
-                    logger.debug("load data {0}".format(self.__binded_channel))
+                    logger.debug(f"load data {self.__binded_channel}")
                     return True
             except Exception:
                 logger.debug("[load_savedata]data do not exist.")
@@ -56,7 +56,7 @@ class Core(object):
         ]
         self.__binded_channel[channel_id] = DataofCore(*items)
         self.saver()
-        logger.debug("[bind]check {0}".format(self.__binded_channel))
+        logger.debug(f"[bind]check {self.__binded_channel}")
         return True
 
     def checker(self, id):

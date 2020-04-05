@@ -52,7 +52,7 @@ class Cmds(commands.Cog):
     @commands.command()
     async def test(self, ctx):
         logger.debug("check test")
-        await ctx.send("OK, {0} !".format(ctx.message.author))
+        await ctx.send(f"OK, {ctx.message.author} !")
 
     @commands.command()
     async def sleep(self, ctx):
@@ -86,7 +86,7 @@ class Cmds(commands.Cog):
     async def set_prfix(self, ctx, prfix: str = None):
         if prfix:
             await ctx.send("restert.")
-            cmd = "python src/app.py {}".format(prfix)
+            cmd = f"python src/app.py {prfix}"
             subprocess.Popen(cmd.split())
             await self.bot.logout()
         else:

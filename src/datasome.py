@@ -14,7 +14,6 @@ class DataofCore(object):
         self.__twid = None
         self.__slug = None
         self.__twitter = None
-        self.__tweets = None
         if Ck and Cs and At and As:
             self.__twitter = Mytwitter(Ck, Cs, At, As)
 
@@ -50,11 +49,3 @@ class DataofCore(object):
     @twitter.setter
     def twitter(self, item):
         self.__twitter = item
-
-    @property
-    def tweets(self):
-        return self.__tweets
-
-    @tweets.setter
-    def tweets(self, item):
-        self.__tweets = item
